@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [ExerciseEntity::class], version = 2)
+@Database(entities = [ExerciseEntity::class, BodyPart::class, Equipment::class, Target::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun exerciseDao(): ExerciseDao
@@ -22,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "exercise_database"
                 )
-                    .fallbackToDestructiveMigration()  // Use this to clear data if needed
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

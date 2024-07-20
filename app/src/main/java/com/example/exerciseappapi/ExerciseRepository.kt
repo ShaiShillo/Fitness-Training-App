@@ -15,10 +15,9 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiSe
             try {
                 val fetchedExercises = apiService.getExercises(limit = 0)
                 val exerciseEntities = fetchedExercises.map { ExerciseEntity.fromExercise(it) }
-                exerciseDao.insertAll(exerciseEntities)
+                exerciseDao.insertAllExercises(exerciseEntities)
                 _exercises.postValue(exerciseEntities.map { it.toExercise() })
             } catch (e: Exception) {
-                // Handle the error appropriately
                 _exercises.postValue(emptyList())
             }
         }
@@ -49,6 +48,41 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiSe
                     // Handle the error appropriately
                 }
             }
+        }
+    }
+
+    suspend fun fetchCategoriesFromApi() {
+        withContext(Dispatchers.IO) {
+            try {
+                val bodyParts = apiService.getBodyParts().map { BodyPart(it) }
+                exerciseDao.insertAllBodyParts(bodyParts)
+
+                val equipment = apiService.getEquipment().map { Equipment(it) }
+                exerciseDao.insertAllEquipment(equipment)
+
+                val targets = apiService.getTargets().map { Target(it) }
+                exerciseDao.insertAllTargets(targets)
+            } catch (e: Exception) {
+                // Handle the error appropriately
+            }
+        }
+    }
+
+    suspend fun getBodyParts(): List<BodyPart> {
+        return withContext(Dispatchers.IO) {
+            exerciseDao.getAllBodyParts()
+        }
+    }
+
+    suspend fun getEquipment(): List<Equipment> {
+        return withContext(Dispatchers.IO) {
+            exerciseDao.getAllEquipment()
+        }
+    }
+
+    suspend fun getTargets(): List<Target> {
+        return withContext(Dispatchers.IO) {
+            exerciseDao.getAllTargets()
         }
     }
 }

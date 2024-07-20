@@ -101,13 +101,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSpinners() {
-        val bodyParts = arrayOf("All", "back", "cardio", "chest", "lower arms", "lower legs", "neck", "shoulders", "upper arms", "upper legs", "waist")
-        val equipment = arrayOf("All", "assisted", "band", "barbell", "body weight", "bosu ball", "cable", "dumbbell", "elliptical machine", "ez barbell", "hammer", "kettlebell", "leverage machine", "medicine ball", "olympic barbell", "resistance band", "roller", "rope", "skierg machine", "sled machine", "smith machine", "stability ball", "stationary bike", "stepmill machine", "tire", "trap bar", "upper body ergometer", "weighted", "wheel roller")
-        val targets = arrayOf("All", "abductors", "abs", "adductors", "biceps", "calves", "cardiovascular system", "delts", "forearms", "glutes", "hamstrings", "lats", "levator scapulae", "pectorals", "quads", "serratus anterior", "spine", "traps", "triceps", "upper back")
+        viewModel.bodyParts.observe(this, Observer { bodyParts ->
+            val bodyPartNames = arrayOf("All") + bodyParts.map { it.name }
+            bodyPartSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyPartNames)
+        })
 
-        bodyPartSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyParts)
-        equipmentSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipment)
-        targetSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targets)
+        viewModel.equipment.observe(this, Observer { equipment ->
+            val equipmentNames = arrayOf("All") + equipment.map { it.name }
+            equipmentSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
+        })
+
+        viewModel.targets.observe(this, Observer { targets ->
+            val targetNames = arrayOf("All") + targets.map { it.name }
+            targetSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targetNames)
+        })
     }
 
     private fun filterExercises() {
