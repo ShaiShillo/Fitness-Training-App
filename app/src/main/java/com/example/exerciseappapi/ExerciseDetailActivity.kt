@@ -12,27 +12,25 @@ class ExerciseDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_detail)
 
+        @Suppress("DEPRECATION")
         val exercise: Exercise? = intent.getParcelableExtra("exercise")
-        exercise?.let {
-            val exerciseNameTextView: TextView = findViewById(R.id.exerciseNameTextView)
-            val exerciseImageView: ImageView = findViewById(R.id.exerciseImageView)
-            val exerciseCategoryTextView: TextView = findViewById(R.id.exerciseCategoryTextView)
-            val exerciseEquipmentTextView: TextView = findViewById(R.id.exerciseEquipmentTextView)
-            val exerciseForceTextView: TextView = findViewById(R.id.exerciseForceTextView)
-            val exerciseLevelTextView: TextView = findViewById(R.id.exerciseLevelTextView)
-            val exercisePrimaryMusclesTextView: TextView = findViewById(R.id.exercisePrimaryMusclesTextView)
-            val exerciseSecondaryMusclesTextView: TextView = findViewById(R.id.exerciseSecondaryMusclesTextView)
-            val exerciseInstructionsTextView: TextView = findViewById(R.id.exerciseInstructionsTextView)
 
-            exerciseNameTextView.text = it.name
-            Glide.with(this).load(it.gifUrl).into(exerciseImageView)
-            exerciseCategoryTextView.text = "Category: ${it.bodyPart}"
-            exerciseEquipmentTextView.text = "Equipment: ${it.equipment}"
-            exerciseForceTextView.text = "Target: ${it.target}"
-            exerciseLevelTextView.text = "Level: ${it.secondaryMuscles.joinToString(", ")}"
-            exercisePrimaryMusclesTextView.text = "Primary Muscles: ${it.secondaryMuscles.joinToString(", ")}"
-            exerciseSecondaryMusclesTextView.text = "Secondary Muscles: ${it.secondaryMuscles.joinToString(", ")}"
-            exerciseInstructionsTextView.text = "Instructions: ${it.instructions.joinToString("\n")}"
+        exercise?.let {
+            val exerciseName: TextView = findViewById(R.id.exerciseName)
+            val exerciseImage: ImageView = findViewById(R.id.exerciseImage)
+            val exerciseCategory: TextView = findViewById(R.id.exerciseCategory)
+            val exerciseEquipment: TextView = findViewById(R.id.exerciseEquipment)
+            val exerciseTargetPrimaryMuscles: TextView = findViewById(R.id.exerciseTargetPrimaryMuscles)
+            val exerciseSecondaryMuscles: TextView = findViewById(R.id.exerciseSecondaryMuscles)
+            val exerciseInstructions: TextView = findViewById(R.id.exerciseInstructions)
+
+            exerciseName.text = it.name
+            Glide.with(this).load(it.gifUrl).into(exerciseImage)
+            exerciseCategory.text = it.bodyPart
+            exerciseEquipment.text = it.equipment
+            exerciseTargetPrimaryMuscles.text = it.target // Assuming primary muscle is the target muscle
+            exerciseSecondaryMuscles.text = it.secondaryMuscles.joinToString(", ")
+            exerciseInstructions.text = it.instructions.joinToString("\n")
         }
     }
 }
