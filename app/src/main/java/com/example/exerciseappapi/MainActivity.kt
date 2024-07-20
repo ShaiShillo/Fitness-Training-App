@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bodyPartSpinner: Spinner
     private lateinit var equipmentSpinner: Spinner
     private lateinit var targetSpinner: Spinner
+    private lateinit var noExercisesTextView: TextView
 
     private var selectedBodyPart: String? = null
     private var selectedEquipment: String? = null
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         bodyPartSpinner = findViewById(R.id.bodyPartSpinner)
         equipmentSpinner = findViewById(R.id.equipmentSpinner)
         targetSpinner = findViewById(R.id.targetSpinner)
+        noExercisesTextView = findViewById(R.id.noExercisesTextView)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -83,10 +86,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.filteredExercises.observe(this, Observer { exercises ->
-            adapter = ExerciseAdapter(exercises) { exercise ->
-                showExerciseDetails(exercise)
+            if (exercises.isEmpty()) {
+                noExercisesTextView.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            } else {
+                noExercisesTextView.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+                adapter = ExerciseAdapter(exercises) { exercise ->
+                    showExerciseDetails(exercise)
+                }
+                recyclerView.adapter = adapter
             }
-            recyclerView.adapter = adapter
         })
     }
 

@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [ExerciseEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ExerciseEntity::class], version = 2)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun exerciseDao(): ExerciseDao
 
     companion object {
@@ -20,7 +21,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "exercise_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()  // Use this to clear data if needed
+                    .build()
                 INSTANCE = instance
                 instance
             }

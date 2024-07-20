@@ -1,31 +1,43 @@
 package com.example.exerciseappapi
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ExerciseViewModel : ViewModel() {
+class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val exerciseRepository: ExerciseRepository
     private val _filteredExercises = MutableLiveData<List<Exercise>>()
     val filteredExercises: LiveData<List<Exercise>> = _filteredExercises
 
+    init {
+        val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
+        val apiService = ApiClient.apiService
+        exerciseRepository = ExerciseRepository(exerciseDao, apiService)
+        fetchExercises()
+        refreshGifUrls()
+    }
+
+    private fun fetchExercises() {
+        viewModelScope.launch {
+            exerciseRepository.fetchExercisesFromApi()
+        }
+    }
+
+    private fun refreshGifUrls() {
+        viewModelScope.launch {
+            exerciseRepository.refreshGifUrls()
+        }
+    }
+
     fun searchExercises(name: String, bodyPart: String?, equipment: String?, target: String?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val allExercises = ApiClient.apiService.getExercises(limit = 0)
-                val filteredExercises = allExercises.filter {
-                    (name.isEmpty() || it.name.contains(name, ignoreCase = true)) &&
-                            (bodyPart == null || it.bodyPart.equals(bodyPart, ignoreCase = true)) &&
-                            (equipment == null || it.equipment.equals(equipment, ignoreCase = true)) &&
-                            (target == null || it.target.equals(target, ignoreCase = true))
-                }
-                _filteredExercises.postValue(filteredExercises)
-            } catch (e: Exception) {
-                _filteredExercises.postValue(emptyList())
-            }
+        viewModelScope.launch {
+            val exercises = exerciseRepository.getExercises(name, bodyPart, equipment, target)
+            _filteredExercises.postValue(exercises)
         }
     }
 }

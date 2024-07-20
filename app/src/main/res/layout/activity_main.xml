@@ -33,6 +33,17 @@
         android:layout_marginBottom="16dp"
         android:prompt="@string/target_prompt" />
 
+    <TextView
+        android:id="@+id/noExercisesTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Oops! 😢 We haven't found an exercise for that yet, maybe you can create a new one 😉"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

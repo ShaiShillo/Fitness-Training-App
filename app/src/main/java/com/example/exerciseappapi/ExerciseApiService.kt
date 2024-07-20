@@ -8,6 +8,9 @@ interface ExerciseApiService {
     @GET("exercises")
     suspend fun getExercises(@Query("offset") offset: Int = 0, @Query("limit") limit: Int = 0): List<Exercise>
 
+    @GET("exercises/{id}")
+    suspend fun getExerciseById(@Path("id") id: String): Exercise
+
     @GET("exercises/name/{name}")
     suspend fun getExercisesByName(@Path("name") name: String, @Query("offset") offset: Int = 0, @Query("limit") limit: Int = 0): List<Exercise>
 

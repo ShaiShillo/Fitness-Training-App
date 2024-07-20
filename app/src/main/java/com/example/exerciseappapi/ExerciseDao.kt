@@ -1,10 +1,10 @@
 package com.example.exerciseappapi
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface ExerciseDao {
@@ -12,7 +12,10 @@ interface ExerciseDao {
     suspend fun insertAll(exercises: List<ExerciseEntity>)
 
     @Query("SELECT * FROM exercises")
-    fun getAllExercises(): LiveData<List<ExerciseEntity>>
+    suspend fun getAllExercises(): List<ExerciseEntity>
+
+    @Update
+    suspend fun updateExercise(exercise: ExerciseEntity)
 
     @Query("DELETE FROM exercises")
     suspend fun deleteAll()

@@ -10,29 +10,20 @@ data class ExerciseEntity(
     val bodyPart: String,
     val equipment: String,
     val target: String,
-    val gifUrl: String
-)
+    var gifUrl: String,
+    val secondaryMuscles: List<String>,
+    val instructions: List<String>
+) {
+    fun toExercise(): Exercise {
+        return Exercise(id, name, bodyPart, equipment, target, gifUrl, secondaryMuscles, instructions)
+    }
 
-fun ExerciseEntity.toExercise(): Exercise {
-    return Exercise(
-        id = this.id,
-        name = this.name,
-        bodyPart = this.bodyPart,
-        equipment = this.equipment,
-        target = this.target,
-        gifUrl = this.gifUrl,
-        secondaryMuscles = emptyList(),
-        instructions = emptyList()
-    )
-}
-
-fun Exercise.toExerciseEntity(): ExerciseEntity {
-    return ExerciseEntity(
-        id = this.id,
-        name = this.name,
-        bodyPart = this.bodyPart,
-        equipment = this.equipment,
-        target = this.target,
-        gifUrl = this.gifUrl
-    )
+    companion object {
+        fun fromExercise(exercise: Exercise): ExerciseEntity {
+            return ExerciseEntity(
+                exercise.id, exercise.name, exercise.bodyPart, exercise.equipment,
+                exercise.target, exercise.gifUrl, exercise.secondaryMuscles, exercise.instructions
+            )
+        }
+    }
 }
