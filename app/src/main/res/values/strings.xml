@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ExerciseAppAPI</string>
-    <string name="body_part_prompt">Filter by Body Part</string>
-    <string name="equipment_prompt">Filter by Equipment</string>
-    <string name="target_prompt">Filter by Target Muscle</string>
+    <string name="body_part_prompt">Select Body Part</string>
+    <string name="target_prompt">Select Target Muscle</string>
+    <string name="equipment_prompt">Select Equipment</string>
 </resources>

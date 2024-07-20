@@ -1,37 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/searchEditText"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search exercises by name"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp">
 
-    <Spinner
-        android:id="@+id/bodyPartSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:prompt="@string/body_part_prompt" />
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/filterContainer"
+            android:layout_marginEnd="8dp"
+            android:hint="Search exercises by name"
+            android:paddingStart="40dp"
+            android:paddingEnd="8dp"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:padding="8dp"
+            android:background="@drawable/search_background"/>
 
-    <Spinner
-        android:id="@+id/equipmentSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:prompt="@string/equipment_prompt" />
+        <LinearLayout
+            android:id="@+id/filterContainer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/search_background"
+            android:gravity="center"
+            android:padding="8dp">
 
-    <Spinner
-        android:id="@+id/targetSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:prompt="@string/target_prompt" />
+            <ImageView
+                android:id="@+id/filterIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_filter"/>
+        </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/noExercisesTextView"
@@ -48,6 +58,5 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
-
+        android:layout_marginBottom="16dp"/>
 </LinearLayout>

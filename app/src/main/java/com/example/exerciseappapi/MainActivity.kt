@@ -5,16 +5,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,9 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ExerciseAdapter
     private lateinit var searchEditText: EditText
-    private lateinit var bodyPartSpinner: Spinner
-    private lateinit var equipmentSpinner: Spinner
-    private lateinit var targetSpinner: Spinner
+    private lateinit var filterIcon: ImageView
     private lateinit var noExercisesTextView: TextView
 
     private var selectedBodyPart: String? = null
@@ -38,53 +33,28 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         searchEditText = findViewById(R.id.searchEditText)
-        bodyPartSpinner = findViewById(R.id.bodyPartSpinner)
-        equipmentSpinner = findViewById(R.id.equipmentSpinner)
-        targetSpinner = findViewById(R.id.targetSpinner)
+        filterIcon = findViewById(R.id.filterIcon)
         noExercisesTextView = findViewById(R.id.noExercisesTextView)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        setupSpinners()
+        filterIcon.setOnClickListener {
+            showFilterBottomSheet()
+        }
+
+        setupObservers()
 
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchText = s.toString()
                 filterExercises()
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
 
-        bodyPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedBodyPart = if (position == 0) null else parent.getItemAtPosition(position).toString()
-                filterExercises()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
-        equipmentSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedEquipment = if (position == 0) null else parent.getItemAtPosition(position).toString()
-                filterExercises()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
-        targetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedTarget = if (position == 0) null else parent.getItemAtPosition(position).toString()
-                filterExercises()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
+    private fun setupObservers() {
         viewModel.filteredExercises.observe(this, Observer { exercises ->
             if (exercises.isEmpty()) {
                 noExercisesTextView.visibility = View.VISIBLE
@@ -100,21 +70,44 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setupSpinners() {
+    private fun showFilterBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_filter, null)
+        bottomSheetDialog.setContentView(view)
+
+        val bodyPartSpinner: Spinner = view.findViewById(R.id.bodyPartSpinner)
+        val targetSpinner: Spinner = view.findViewById(R.id.targetSpinner)
+        val equipmentSpinner: Spinner = view.findViewById(R.id.equipmentSpinner)
+        val applyFiltersButton: Button = view.findViewById(R.id.applyFiltersButton)
+
         viewModel.bodyParts.observe(this, Observer { bodyParts ->
             val bodyPartNames = arrayOf("All") + bodyParts.map { it.name }
-            bodyPartSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyPartNames)
+            val bodyPartAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyPartNames)
+            bodyPartSpinner.adapter = bodyPartAdapter
         })
 
         viewModel.equipment.observe(this, Observer { equipment ->
             val equipmentNames = arrayOf("All") + equipment.map { it.name }
-            equipmentSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
+            val equipmentAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
+            equipmentSpinner.adapter = equipmentAdapter
         })
 
         viewModel.targets.observe(this, Observer { targets ->
             val targetNames = arrayOf("All") + targets.map { it.name }
-            targetSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targetNames)
+            val targetAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targetNames)
+            targetSpinner.adapter = targetAdapter
         })
+
+        applyFiltersButton.setOnClickListener {
+            selectedBodyPart = if (bodyPartSpinner.selectedItemPosition == 0) null else bodyPartSpinner.selectedItem.toString()
+            selectedTarget = if (targetSpinner.selectedItemPosition == 0) null else targetSpinner.selectedItem.toString()
+            selectedEquipment = if (equipmentSpinner.selectedItemPosition == 0) null else equipmentSpinner.selectedItem.toString()
+
+            filterExercises()
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
     }
 
     private fun filterExercises() {
