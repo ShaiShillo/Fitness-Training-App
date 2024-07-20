@@ -5,30 +5,57 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Body Part"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
     <Spinner
         android:id="@+id/bodyPartSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:minHeight="48dp"
         android:prompt="@string/body_part_prompt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Target Muscle"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/targetSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:minHeight="48dp"
         android:prompt="@string/target_prompt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Equipment"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/equipmentSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:minHeight="48dp"
         android:prompt="@string/equipment_prompt" />
 
     <Button
         android:id="@+id/applyFiltersButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:text="Apply Filters"/>
 </LinearLayout>

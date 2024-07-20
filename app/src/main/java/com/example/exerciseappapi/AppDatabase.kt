@@ -1,14 +1,15 @@
 package com.example.exerciseappapi
 
-import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import android.content.Context
 
-@Database(entities = [ExerciseEntity::class, BodyPart::class, Equipment::class, Target::class], version = 3)
+@Database(entities = [ExerciseEntity::class], version = 4, exportSchema = false)  // Incremented version to 4
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun exerciseDao(): ExerciseDao
 
     companion object {
@@ -21,8 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "exercise_database"
-                )
-                    .fallbackToDestructiveMigration()
+                ).fallbackToDestructiveMigration() // This will destroy and rebuild the database if necessary
                     .build()
                 INSTANCE = instance
                 instance

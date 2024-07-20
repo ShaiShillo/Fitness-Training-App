@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
     private const val BASE_URL = "https://exercisedb.p.rapidapi.com/"
-    private const val API_KEY = "6352064036mshfae09317bb4e7e5p188eccjsna50ba9df69c4"
+    private const val API_KEY = "d163ce6c1fmsh29fe75841fce382p11d25ajsn126d51070987"
     private const val API_HOST = "exercisedb.p.rapidapi.com"
 
     private val client = OkHttpClient.Builder()

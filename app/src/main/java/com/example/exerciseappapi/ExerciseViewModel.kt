@@ -14,22 +14,35 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _filteredExercises = MutableLiveData<List<Exercise>>()
     val filteredExercises: LiveData<List<Exercise>> = _filteredExercises
 
-    private val _bodyParts = MutableLiveData<List<BodyPart>>()
-    val bodyParts: LiveData<List<BodyPart>> = _bodyParts
+    private val _bodyParts = MutableLiveData<List<String>>()
+    val bodyParts: LiveData<List<String>> = _bodyParts
 
-    private val _equipment = MutableLiveData<List<Equipment>>()
-    val equipment: LiveData<List<Equipment>> = _equipment
+    private val _targets = MutableLiveData<List<String>>()
+    val targets: LiveData<List<String>> = _targets
 
-    private val _targets = MutableLiveData<List<Target>>()
-    val targets: LiveData<List<Target>> = _targets
+    private val _equipment = MutableLiveData<List<String>>()
+    val equipment: LiveData<List<String>> = _equipment
 
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val apiService = ApiClient.apiService
         exerciseRepository = ExerciseRepository(exerciseDao, apiService)
+        fetchBodyParts()
         fetchExercises()
-        refreshGifUrls()
-        fetchCategories()
+    }
+
+    fun searchExercises(name: String, bodyPart: String?, target: String?, equipment: String?) {
+        viewModelScope.launch {
+            val exercises = exerciseRepository.getExercises(name, bodyPart, target, equipment)
+            _filteredExercises.postValue(exercises)
+        }
+    }
+
+    private fun fetchBodyParts() {
+        viewModelScope.launch {
+            val bodyParts = exerciseRepository.getBodyParts()
+            _bodyParts.postValue(bodyParts)
+        }
     }
 
     private fun fetchExercises() {
@@ -38,25 +51,19 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    private fun refreshGifUrls() {
+    fun loadTargets(bodyPart: String) {
         viewModelScope.launch {
-            exerciseRepository.refreshGifUrls()
+            val targets = exerciseRepository.getTargetsByBodyPart(bodyPart)
+            _targets.postValue(targets)
         }
     }
 
-    fun searchExercises(name: String, bodyPart: String?, equipment: String?, target: String?) {
+    fun loadEquipment(bodyPart: String, target: String) {
         viewModelScope.launch {
-            val exercises = exerciseRepository.getExercises(name, bodyPart, equipment, target)
-            _filteredExercises.postValue(exercises)
-        }
-    }
-
-    private fun fetchCategories() {
-        viewModelScope.launch {
-            exerciseRepository.fetchCategoriesFromApi()
-            _bodyParts.postValue(exerciseRepository.getBodyParts())
-            _equipment.postValue(exerciseRepository.getEquipment())
-            _targets.postValue(exerciseRepository.getTargets())
+            val equipment = exerciseRepository.getEquipmentByBodyPartAndTarget(bodyPart, target)
+            _equipment.postValue(equipment)
         }
     }
 }
+
+

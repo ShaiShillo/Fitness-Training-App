@@ -23,9 +23,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var noExercisesTextView: TextView
 
     private var selectedBodyPart: String? = null
-    private var selectedEquipment: String? = null
     private var selectedTarget: String? = null
+    private var selectedEquipment: String? = null
     private var searchText: String = ""
+    private var isFiltered: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,11 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         filterIcon.setOnClickListener {
-            showFilterBottomSheet()
+            if (isFiltered) {
+                resetFilters()
+            } else {
+                showFilterBottomSheet()
+            }
         }
 
         setupObservers()
@@ -81,37 +86,74 @@ class MainActivity : AppCompatActivity() {
         val applyFiltersButton: Button = view.findViewById(R.id.applyFiltersButton)
 
         viewModel.bodyParts.observe(this, Observer { bodyParts ->
-            val bodyPartNames = arrayOf("All") + bodyParts.map { it.name }
+            val bodyPartNames = bodyParts
             val bodyPartAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyPartNames)
             bodyPartSpinner.adapter = bodyPartAdapter
         })
 
-        viewModel.equipment.observe(this, Observer { equipment ->
-            val equipmentNames = arrayOf("All") + equipment.map { it.name }
-            val equipmentAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
-            equipmentSpinner.adapter = equipmentAdapter
-        })
+        bodyPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                selectedBodyPart = bodyPartSpinner.selectedItem as String
+                targetSpinner.visibility = View.VISIBLE
+                viewModel.loadTargets(selectedBodyPart!!)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
         viewModel.targets.observe(this, Observer { targets ->
-            val targetNames = arrayOf("All") + targets.map { it.name }
+            val targetNames = targets
             val targetAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targetNames)
             targetSpinner.adapter = targetAdapter
         })
 
-        applyFiltersButton.setOnClickListener {
-            selectedBodyPart = if (bodyPartSpinner.selectedItemPosition == 0) null else bodyPartSpinner.selectedItem.toString()
-            selectedTarget = if (targetSpinner.selectedItemPosition == 0) null else targetSpinner.selectedItem.toString()
-            selectedEquipment = if (equipmentSpinner.selectedItemPosition == 0) null else equipmentSpinner.selectedItem.toString()
+        targetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                selectedTarget = targetSpinner.selectedItem as String
+                equipmentSpinner.visibility = View.VISIBLE
+                viewModel.loadEquipment(selectedBodyPart!!, selectedTarget!!)
+            }
 
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        viewModel.equipment.observe(this, Observer { equipment ->
+            val equipmentNames = equipment
+            val equipmentAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
+            equipmentSpinner.adapter = equipmentAdapter
+        })
+
+        equipmentSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                selectedEquipment = equipmentSpinner.selectedItem as String
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        applyFiltersButton.setOnClickListener {
             filterExercises()
             bottomSheetDialog.dismiss()
+            isFiltered = true
+            filterIcon.setImageResource(R.drawable.ic_unfilter) // Change icon to unfilter
         }
 
         bottomSheetDialog.show()
     }
 
     private fun filterExercises() {
-        viewModel.searchExercises(searchText, selectedBodyPart, selectedEquipment, selectedTarget)
+        viewModel.searchExercises(searchText, selectedBodyPart, selectedTarget, selectedEquipment)
+    }
+
+    private fun resetFilters() {
+        selectedBodyPart = null
+        selectedTarget = null
+        selectedEquipment = null
+        searchText = ""
+        searchEditText.setText("")
+        isFiltered = false
+        filterIcon.setImageResource(R.drawable.ic_filter) // Change icon back to filter
+        viewModel.searchExercises(searchText, selectedBodyPart, selectedTarget, selectedEquipment) // Reload all exercises
     }
 
     private fun showExerciseDetails(exercise: Exercise) {
@@ -121,3 +163,4 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 }
+

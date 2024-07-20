@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 
 @Dao
 interface ExerciseDao {
@@ -14,27 +13,12 @@ interface ExerciseDao {
     @Query("SELECT * FROM exercises")
     suspend fun getAllExercises(): List<ExerciseEntity>
 
-    @Update
-    suspend fun updateExercise(exercise: ExerciseEntity)
+    @Query("SELECT DISTINCT bodyPart FROM exercises")
+    suspend fun getAllBodyParts(): List<String>
 
-    @Query("DELETE FROM exercises")
-    suspend fun deleteAllExercises()
+    @Query("SELECT DISTINCT target FROM exercises WHERE bodyPart = :bodyPart")
+    suspend fun getTargetsByBodyPart(bodyPart: String): List<String>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllBodyParts(bodyParts: List<BodyPart>)
-
-    @Query("SELECT * FROM body_parts")
-    suspend fun getAllBodyParts(): List<BodyPart>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllEquipment(equipment: List<Equipment>)
-
-    @Query("SELECT * FROM equipment")
-    suspend fun getAllEquipment(): List<Equipment>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllTargets(targets: List<Target>)
-
-    @Query("SELECT * FROM targets")
-    suspend fun getAllTargets(): List<Target>
+    @Query("SELECT DISTINCT equipment FROM exercises WHERE bodyPart = :bodyPart AND target = :target")
+    suspend fun getEquipmentByBodyPartAndTarget(bodyPart: String, target: String): List<String>
 }

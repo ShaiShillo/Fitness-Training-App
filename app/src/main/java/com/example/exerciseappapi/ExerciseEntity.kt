@@ -10,7 +10,7 @@ data class ExerciseEntity(
     val bodyPart: String,
     val equipment: String,
     val target: String,
-    var gifUrl: String,
+    val gifUrl: String,
     val secondaryMuscles: List<String>,
     val instructions: List<String>
 ) {
