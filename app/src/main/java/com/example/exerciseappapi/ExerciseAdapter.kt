@@ -8,7 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class ExerciseAdapter(private val exercises: List<Exercise>, private val onClick: (Exercise) -> Unit) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
+class ExerciseAdapter(
+    private val exercises: List<Exercise>,
+    private val onItemClick: (Exercise) -> Unit
+) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
@@ -16,19 +19,27 @@ class ExerciseAdapter(private val exercises: List<Exercise>, private val onClick
     }
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
-        holder.bind(exercises[position])
+        val exercise = exercises[position]
+        holder.bind(exercise)
+        holder.itemView.setOnClickListener { onItemClick(exercise) }
     }
 
-    override fun getItemCount() = exercises.size
+    override fun getItemCount(): Int = exercises.size
 
     inner class ExerciseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val exerciseGif: ImageView = itemView.findViewById(R.id.exerciseGif)
         private val exerciseName: TextView = itemView.findViewById(R.id.exerciseName)
-        private val exerciseImage: ImageView = itemView.findViewById(R.id.exerciseImage)
+        private val exerciseTarget: TextView = itemView.findViewById(R.id.exerciseTarget)
+        private val exerciseEquipment: TextView = itemView.findViewById(R.id.exerciseEquipment)
 
         fun bind(exercise: Exercise) {
-            exerciseName.text = exercise.name
-            Glide.with(itemView.context).load(exercise.gifUrl).into(exerciseImage)
-            itemView.setOnClickListener { onClick(exercise) }
+            Glide.with(itemView.context).load(exercise.gifUrl).into(exerciseGif)
+            exerciseName.text = "${exercise.name.capitalizeWords()}"
+            exerciseTarget.text = "Target: ${exercise.target.capitalizeWords()}"
+            exerciseEquipment.text = "Equipment: ${exercise.equipment.capitalizeWords()}"
         }
     }
 }
+
+// Extension function to capitalize words
+fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }

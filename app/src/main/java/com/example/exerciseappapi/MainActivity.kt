@@ -1,14 +1,15 @@
 package com.example.exerciseappapi
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -91,16 +92,34 @@ class MainActivity : AppCompatActivity() {
         equipmentSpinner.isEnabled = false
         equipmentSpinner.alpha = 0.5f
 
+        // Create a custom ArrayAdapter that includes the hint as the first item
+        val bodyPartAdapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mutableListOf<String>()) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                if (position == 0) {
+                    (view as TextView).setTextColor(ContextCompat.getColor(context, R.color.hint_color))
+                }
+                return view
+            }
+
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+        }
+        bodyPartAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        bodyPartSpinner.adapter = bodyPartAdapter
+
         viewModel.bodyParts.observe(this, Observer { bodyParts ->
             val bodyPartNames = listOf(getString(R.string.select_body_part)) + bodyParts
-            val bodyPartAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyPartNames)
-            bodyPartSpinner.adapter = bodyPartAdapter
+            bodyPartAdapter.clear()
+            bodyPartAdapter.addAll(bodyPartNames)
+            bodyPartAdapter.notifyDataSetChanged()
         })
 
         bodyPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedBodyPart = bodyPartSpinner.selectedItem as String
-                if (selectedBodyPart != getString(R.string.select_body_part)) {
+                selectedBodyPart = if (position == 0) null else bodyPartSpinner.selectedItem as String
+                if (selectedBodyPart != null) {
                     targetSpinner.isEnabled = true
                     targetSpinner.alpha = 1.0f
                     viewModel.loadTargets(selectedBodyPart!!)
@@ -115,16 +134,33 @@ class MainActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
+        val targetAdapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mutableListOf<String>()) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                if (position == 0) {
+                    (view as TextView).setTextColor(resources.getColor(R.color.hint_color))
+                }
+                return view
+            }
+
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+        }
+        targetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        targetSpinner.adapter = targetAdapter
+
         viewModel.targets.observe(this, Observer { targets ->
             val targetNames = listOf(getString(R.string.select_target)) + targets
-            val targetAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targetNames)
-            targetSpinner.adapter = targetAdapter
+            targetAdapter.clear()
+            targetAdapter.addAll(targetNames)
+            targetAdapter.notifyDataSetChanged()
         })
 
         targetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedTarget = targetSpinner.selectedItem as String
-                if (selectedTarget != getString(R.string.select_target)) {
+                selectedTarget = if (position == 0) null else targetSpinner.selectedItem as String
+                if (selectedTarget != null) {
                     equipmentSpinner.isEnabled = true
                     equipmentSpinner.alpha = 1.0f
                     viewModel.loadEquipment(selectedBodyPart!!, selectedTarget!!)
@@ -137,15 +173,32 @@ class MainActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
+        val equipmentAdapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mutableListOf<String>()) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                if (position == 0) {
+                    (view as TextView).setTextColor(resources.getColor(R.color.hint_color))
+                }
+                return view
+            }
+
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+        }
+        equipmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        equipmentSpinner.adapter = equipmentAdapter
+
         viewModel.equipment.observe(this, Observer { equipment ->
             val equipmentNames = listOf(getString(R.string.select_equipment)) + equipment
-            val equipmentAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
-            equipmentSpinner.adapter = equipmentAdapter
+            equipmentAdapter.clear()
+            equipmentAdapter.addAll(equipmentNames)
+            equipmentAdapter.notifyDataSetChanged()
         })
 
         equipmentSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedEquipment = equipmentSpinner.selectedItem as String
+                selectedEquipment = if (position == 0) null else equipmentSpinner.selectedItem as String
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -183,4 +236,3 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 }
-

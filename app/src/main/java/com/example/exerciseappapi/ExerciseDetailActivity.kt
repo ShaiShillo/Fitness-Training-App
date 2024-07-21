@@ -17,6 +17,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
 
         exercise?.let {
             val exerciseName: TextView = findViewById(R.id.exerciseName)
+
             val exerciseImage: ImageView = findViewById(R.id.exerciseImage)
             val exerciseCategory: TextView = findViewById(R.id.exerciseCategory)
             val exerciseEquipment: TextView = findViewById(R.id.exerciseEquipment)
@@ -24,13 +25,13 @@ class ExerciseDetailActivity : AppCompatActivity() {
             val exerciseSecondaryMuscles: TextView = findViewById(R.id.exerciseSecondaryMuscles)
             val exerciseInstructions: TextView = findViewById(R.id.exerciseInstructions)
 
-            exerciseName.text = it.name
+            exerciseName.text = it.name.capitalizeWords()
             Glide.with(this).load(it.gifUrl).into(exerciseImage)
-            exerciseCategory.text = it.bodyPart
-            exerciseEquipment.text = it.equipment
-            exerciseTargetPrimaryMuscles.text = it.target // Assuming primary muscle is the target muscle
-            exerciseSecondaryMuscles.text = it.secondaryMuscles.joinToString(", ")
-            exerciseInstructions.text = it.instructions.joinToString("\n")
+            exerciseCategory.text = it.bodyPart.capitalizeWords()
+            exerciseEquipment.text = it.equipment.capitalizeWords()
+            exerciseTargetPrimaryMuscles.text = it.target.capitalizeWords() // Assuming primary muscle is the target muscle
+            exerciseSecondaryMuscles.text = it.secondaryMuscles.joinToString(", ").capitalizeWords()
+            exerciseInstructions.text = it.instructions.joinToString("\n").capitalizeWords()
         }
     }
 }
