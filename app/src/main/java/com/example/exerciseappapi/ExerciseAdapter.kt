@@ -41,5 +41,4 @@ class ExerciseAdapter(
     }
 }
 
-// Extension function to capitalize words
-fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
+
