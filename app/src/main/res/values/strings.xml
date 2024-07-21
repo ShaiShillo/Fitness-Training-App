@@ -3,4 +3,7 @@
     <string name="body_part_prompt">Select Body Part</string>
     <string name="target_prompt">Select Target Muscle</string>
     <string name="equipment_prompt">Select Equipment</string>
+    <string name="select_body_part">Select Body Part</string>
+    <string name="select_target">Select Target Muscle</string>
+    <string name="select_equipment">Select Equipment</string>
 </resources>

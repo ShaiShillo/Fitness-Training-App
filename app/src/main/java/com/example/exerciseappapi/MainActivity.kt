@@ -1,5 +1,6 @@
 package com.example.exerciseappapi
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -85,8 +86,13 @@ class MainActivity : AppCompatActivity() {
         val equipmentSpinner: Spinner = view.findViewById(R.id.equipmentSpinner)
         val applyFiltersButton: Button = view.findViewById(R.id.applyFiltersButton)
 
+        targetSpinner.isEnabled = false
+        targetSpinner.alpha = 0.5f
+        equipmentSpinner.isEnabled = false
+        equipmentSpinner.alpha = 0.5f
+
         viewModel.bodyParts.observe(this, Observer { bodyParts ->
-            val bodyPartNames = bodyParts
+            val bodyPartNames = listOf(getString(R.string.select_body_part)) + bodyParts
             val bodyPartAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bodyPartNames)
             bodyPartSpinner.adapter = bodyPartAdapter
         })
@@ -94,15 +100,23 @@ class MainActivity : AppCompatActivity() {
         bodyPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 selectedBodyPart = bodyPartSpinner.selectedItem as String
-                targetSpinner.visibility = View.VISIBLE
-                viewModel.loadTargets(selectedBodyPart!!)
+                if (selectedBodyPart != getString(R.string.select_body_part)) {
+                    targetSpinner.isEnabled = true
+                    targetSpinner.alpha = 1.0f
+                    viewModel.loadTargets(selectedBodyPart!!)
+                } else {
+                    targetSpinner.isEnabled = false
+                    targetSpinner.alpha = 0.5f
+                    equipmentSpinner.isEnabled = false
+                    equipmentSpinner.alpha = 0.5f
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         viewModel.targets.observe(this, Observer { targets ->
-            val targetNames = targets
+            val targetNames = listOf(getString(R.string.select_target)) + targets
             val targetAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, targetNames)
             targetSpinner.adapter = targetAdapter
         })
@@ -110,15 +124,21 @@ class MainActivity : AppCompatActivity() {
         targetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 selectedTarget = targetSpinner.selectedItem as String
-                equipmentSpinner.visibility = View.VISIBLE
-                viewModel.loadEquipment(selectedBodyPart!!, selectedTarget!!)
+                if (selectedTarget != getString(R.string.select_target)) {
+                    equipmentSpinner.isEnabled = true
+                    equipmentSpinner.alpha = 1.0f
+                    viewModel.loadEquipment(selectedBodyPart!!, selectedTarget!!)
+                } else {
+                    equipmentSpinner.isEnabled = false
+                    equipmentSpinner.alpha = 0.5f
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         viewModel.equipment.observe(this, Observer { equipment ->
-            val equipmentNames = equipment
+            val equipmentNames = listOf(getString(R.string.select_equipment)) + equipment
             val equipmentAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipmentNames)
             equipmentSpinner.adapter = equipmentAdapter
         })

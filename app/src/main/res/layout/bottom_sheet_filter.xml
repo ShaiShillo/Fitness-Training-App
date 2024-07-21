@@ -8,39 +8,42 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Filter Exercises"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Select Body Part"
-        android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/bodyPartSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:minHeight="48dp"
-        android:prompt="@string/body_part_prompt" />
+        android:layout_marginBottom="8dp"
+        android:prompt="@string/select_body_part"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Target Muscle"
-        android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/targetSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone"
-        android:minHeight="48dp"
-        android:prompt="@string/target_prompt" />
+        android:layout_marginBottom="8dp"
+        android:enabled="false"
+        android:alpha="0.5"
+        android:prompt="@string/select_target"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Equipment"
-        android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
     <Spinner
@@ -48,14 +51,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:visibility="gone"
-        android:minHeight="48dp"
-        android:prompt="@string/equipment_prompt" />
+        android:enabled="false"
+        android:alpha="0.5"
+        android:prompt="@string/select_equipment"/>
 
     <Button
         android:id="@+id/applyFiltersButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
         android:text="Apply Filters"/>
+
 </LinearLayout>
