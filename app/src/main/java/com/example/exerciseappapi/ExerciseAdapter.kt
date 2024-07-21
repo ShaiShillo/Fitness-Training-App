@@ -1,12 +1,10 @@
 package com.example.exerciseappapi
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.exerciseappapi.databinding.ItemExerciseBinding
 
 class ExerciseAdapter(
     private val exercises: List<Exercise>,
@@ -14,8 +12,8 @@ class ExerciseAdapter(
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
-        return ExerciseViewHolder(view)
+        val binding = ItemExerciseBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ExerciseViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
@@ -26,19 +24,12 @@ class ExerciseAdapter(
 
     override fun getItemCount(): Int = exercises.size
 
-    inner class ExerciseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val exerciseGif: ImageView = itemView.findViewById(R.id.exerciseGif)
-        private val exerciseName: TextView = itemView.findViewById(R.id.exerciseName)
-        private val exerciseTarget: TextView = itemView.findViewById(R.id.exerciseTarget)
-        private val exerciseEquipment: TextView = itemView.findViewById(R.id.exerciseEquipment)
-
+    inner class ExerciseViewHolder(private val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
-            Glide.with(itemView.context).load(exercise.gifUrl).into(exerciseGif)
-            exerciseName.text = exercise.name.capitalizeWords()
-            "Target: ${exercise.target.capitalizeWords()}".also { exerciseTarget.text = it }
-            "Equipment: ${exercise.equipment.capitalizeWords()}".also { exerciseEquipment.text = it }
+            Glide.with(binding.root.context).load(exercise.gifUrl).into(binding.exerciseGif)
+            binding.exerciseName.text = exercise.name.capitalizeWords()
+            "Target: ${exercise.target.capitalizeWords()}".also { binding.exerciseTarget.text = it }
+            "Equipment: ${exercise.equipment.capitalizeWords()}".also { binding.exerciseEquipment.text = it }
         }
     }
 }
-
-
