@@ -34,9 +34,9 @@ class ExerciseAdapter(
 
         fun bind(exercise: Exercise) {
             Glide.with(itemView.context).load(exercise.gifUrl).into(exerciseGif)
-            exerciseName.text = "${exercise.name.capitalizeWords()}"
-            exerciseTarget.text = "Target: ${exercise.target.capitalizeWords()}"
-            exerciseEquipment.text = "Equipment: ${exercise.equipment.capitalizeWords()}"
+            exerciseName.text = exercise.name.capitalizeWords()
+            "Target: ${exercise.target.capitalizeWords()}".also { exerciseTarget.text = it }
+            "Equipment: ${exercise.equipment.capitalizeWords()}".also { exerciseEquipment.text = it }
         }
     }
 }

@@ -20,6 +20,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="4dp"
         android:background="@drawable/gif_placeholder"
+        android:contentDescription="Exercise Gif/Image"
         android:scaleType="centerCrop" />
 
     <LinearLayout
