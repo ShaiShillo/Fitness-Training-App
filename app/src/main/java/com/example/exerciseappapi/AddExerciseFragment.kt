@@ -228,23 +228,32 @@ class AddExerciseFragment : Fragment() {
 
     private fun saveExercise() {
         val name = binding.exerciseNameEditText.text.toString()
-        val bodyPart = binding.bodyPartSpinner.selectedItem as String
-        val equipment = binding.equipmentSpinner.selectedItem as String
-        val target = binding.targetSpinner.selectedItem as String
+        val bodyPart = binding.bodyPartSpinner.selectedItem as? String
+        val equipment = binding.equipmentSpinner.selectedItem as? String
+        val target = binding.targetSpinner.selectedItem as? String
         val secondaryMuscles = binding.secondaryMusclesEditText.text.toString().split(",").filter { it.isNotEmpty() }
         val instructions = binding.instructionsEditText.text.toString().split(",").filter { it.isNotEmpty() }
 
-        if (name.isEmpty() || bodyPart == getString(R.string.select_body_part) || equipment == getString(R.string.select_equipment) || target == getString(R.string.select_target) || imageUri == null) {
-            Toast.makeText(requireContext(), "Please fill all fields and select an image.", Toast.LENGTH_SHORT).show()
+        val missingFields = listOf(
+            "name" to name.isEmpty(),
+            "body part" to (bodyPart.isNullOrEmpty() || bodyPart == getString(R.string.select_body_part)),
+            "equipment" to (equipment.isNullOrEmpty() || equipment == getString(R.string.select_equipment)),
+            "target" to (target.isNullOrEmpty() || target == getString(R.string.select_target)),
+            "image" to (imageUri == null)
+        ).mapNotNull { if (it.second) it.first else null }
+
+        if (missingFields.isNotEmpty()) {
+            val message = "Please fill the following fields: ${missingFields.joinToString(", ")}"
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             return
         }
 
         val exercise = Exercise(
             id = System.currentTimeMillis().toString(),
             name = name,
-            bodyPart = bodyPart,
-            equipment = equipment,
-            target = target,
+            bodyPart = bodyPart ?: "",
+            equipment = equipment ?: "",
+            target = target ?: "",
             gifUrl = imageUri.toString(),
             secondaryMuscles = secondaryMuscles,
             instructions = instructions
