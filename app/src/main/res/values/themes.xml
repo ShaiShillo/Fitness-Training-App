@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.ExerciseAppAPI" parent="Base.Theme.ExerciseAppAPI" />
+
+    <!-- Add this style to handle the rounded corners -->
+    <style name="ShapeAppearanceOverlay.MaterialComponents.ShapeableImageView.RoundedCorner8" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
 </resources>

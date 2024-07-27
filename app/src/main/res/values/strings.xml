@@ -10,4 +10,5 @@
     <string name="exercise_not_found">Oops! 😢 We haven\'t found an exercise for that yet, maybe you can create a new one 😉</string>
     <string name="search_exercises_by_name">Search exercises by name</string>
     <string name="add_image">Add Image</string>
+    <string name="exercise_gif_image">Exercise GIF/Image</string>
 </resources>

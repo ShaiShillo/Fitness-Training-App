@@ -80,8 +80,15 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android.v142)
 
     //Glide
-    implementation(libs.glide.v4110)
+    implementation (libs.glide)
     kapt(libs.compiler.v4110)
+    annotationProcessor (libs.compiler.v4151)
+
+    //Material Design
+    implementation (libs.material.v130)
+
+
+
 
 
     //RecyclerView
