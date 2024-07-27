@@ -24,6 +24,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _filteredExercises = MutableLiveData<List<Exercise>>()
     val filteredExercises: LiveData<List<Exercise>> get() = _filteredExercises
 
+    private val _searchQuery = MutableLiveData<String>()
+    val searchQuery: LiveData<String> get() = _searchQuery
+
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val apiService = ApiClient.apiService
@@ -55,6 +58,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun resetFilters() {
+        _searchQuery.value = ""
+        // Reset other filters as needed
+    }
+
+
     fun loadTargets(bodyPart: String) {
         viewModelScope.launch {
             exerciseRepository.getTargetsByBodyPart(bodyPart).collect { targets ->
@@ -62,6 +71,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
+
+
 
     fun loadEquipment(bodyPart: String, target: String) {
         viewModelScope.launch {

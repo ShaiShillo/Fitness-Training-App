@@ -48,10 +48,24 @@ class MainFragment : Fragment() {
         setupSearch()
         setupFilterIcon()
         setupAddExerciseButton()
-
+        setupListeners()
+        setupObservers()
         return binding.root
     }
+    private fun setupListeners() {
+        parentFragmentManager.setFragmentResultListener("addExerciseResult", this) { _, bundle ->
+            val shouldReset = bundle.getBoolean("shouldReset")
+            if (shouldReset) {
+                clearSearchAndFilters()
+            }
+        }
+    }
 
+    private fun clearSearchAndFilters() {
+        binding.searchEditText.text.clear()
+        viewModel.resetFilters()
+        // Add any additional logic to reset filters if needed
+    }
     private fun setupObservers() {
         viewModel.filteredExercises.observe(viewLifecycleOwner, Observer { exercises ->
             if (exercises.isEmpty()) {

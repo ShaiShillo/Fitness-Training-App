@@ -18,5 +18,9 @@
         android:id="@+id/addExerciseFragment"
         android:name="com.example.exerciseappapi.AddExerciseFragment"
         android:label="AddExerciseFragment"
-        tools:layout="@layout/fragment_add_exercise" />
+        tools:layout="@layout/fragment_add_exercise" >
+        <action
+            android:id="@+id/action_addExerciseFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>

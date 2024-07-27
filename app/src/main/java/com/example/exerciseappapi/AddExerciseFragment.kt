@@ -19,7 +19,9 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -261,7 +263,8 @@ class AddExerciseFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.addExercise(exercise)
-            findNavController().navigateUp()
+            setFragmentResult("addExerciseResult", bundleOf("shouldReset" to true))
+            findNavController().navigate(R.id.action_addExerciseFragment_to_mainFragment)
         }
     }
 
