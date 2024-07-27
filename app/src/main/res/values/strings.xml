@@ -6,4 +6,8 @@
     <string name="select_body_part">Select Body Part</string>
     <string name="select_target">Select Target Muscle</string>
     <string name="select_equipment">Select Equipment</string>
+    <string name="filter_icon">Filter Icon</string>
+    <string name="exercise_not_found">Oops! 😢 We haven\'t found an exercise for that yet, maybe you can create a new one 😉</string>
+    <string name="search_exercises_by_name">Search exercises by name</string>
+    <string name="add_image">Add Image</string>
 </resources>

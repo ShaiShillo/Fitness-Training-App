@@ -5,23 +5,24 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
     private val exerciseRepository: ExerciseRepository
-    private val _filteredExercises = MutableLiveData<List<Exercise>>()
-    val filteredExercises: LiveData<List<Exercise>> = _filteredExercises
 
     private val _bodyParts = MutableLiveData<List<String>>()
-    val bodyParts: LiveData<List<String>> = _bodyParts
+    val bodyParts: LiveData<List<String>> get() = _bodyParts
 
     private val _targets = MutableLiveData<List<String>>()
-    val targets: LiveData<List<String>> = _targets
+    val targets: LiveData<List<String>> get() = _targets
 
     private val _equipment = MutableLiveData<List<String>>()
-    val equipment: LiveData<List<String>> = _equipment
+    val equipment: LiveData<List<String>> get() = _equipment
+
+    private val _filteredExercises = MutableLiveData<List<Exercise>>()
+    val filteredExercises: LiveData<List<Exercise>> get() = _filteredExercises
 
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
@@ -29,19 +30,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         exerciseRepository = ExerciseRepository(exerciseDao, apiService)
         fetchBodyParts()
         fetchExercises()
-    }
-
-    fun searchExercises(name: String, bodyPart: String?, target: String?, equipment: String?) {
-        viewModelScope.launch {
-            val exercises = exerciseRepository.getExercises(name, bodyPart, target, equipment)
-            _filteredExercises.postValue(exercises)
-        }
+        fetchAllEquipment()
     }
 
     private fun fetchBodyParts() {
         viewModelScope.launch {
-            val bodyParts = exerciseRepository.getBodyParts()
-            _bodyParts.postValue(bodyParts)
+            exerciseRepository.getBodyParts().collect { bodyParts ->
+                _bodyParts.postValue(bodyParts)
+            }
         }
     }
 
@@ -51,19 +47,41 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun fetchAllEquipment() {
+        viewModelScope.launch {
+            exerciseRepository.getAllEquipment().collect { equipment ->
+                _equipment.postValue(equipment)
+            }
+        }
+    }
+
     fun loadTargets(bodyPart: String) {
         viewModelScope.launch {
-            val targets = exerciseRepository.getTargetsByBodyPart(bodyPart)
-            _targets.postValue(targets)
+            exerciseRepository.getTargetsByBodyPart(bodyPart).collect { targets ->
+                _targets.postValue(targets)
+            }
         }
     }
 
     fun loadEquipment(bodyPart: String, target: String) {
         viewModelScope.launch {
-            val equipment = exerciseRepository.getEquipmentByBodyPartAndTarget(bodyPart, target)
-            _equipment.postValue(equipment)
+            exerciseRepository.getEquipmentByBodyPartAndTarget(bodyPart, target).collect { equipment ->
+                _equipment.postValue(equipment)
+            }
+        }
+    }
+
+    fun searchExercises(name: String, bodyPart: String?, target: String?, equipment: String?) {
+        viewModelScope.launch {
+            exerciseRepository.getExercises(name, bodyPart, target, equipment).collect { exercises ->
+                _filteredExercises.postValue(exercises)
+            }
+        }
+    }
+
+    fun addExercise(exercise: Exercise) {
+        viewModelScope.launch {
+            exerciseRepository.addExercise(exercise)
         }
     }
 }
-
-

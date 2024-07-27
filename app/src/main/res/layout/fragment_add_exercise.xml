@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.exerciseappapi.ExerciseViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/exerciseImageView"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add_photo"
+                android:contentDescription="@string/add_image"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="* Exercise Name"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/exerciseNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Exercise Name"
+                android:inputType="text"
+                android:minHeight="48dp" />
+
+            <TextView
+                android:id="@+id/bodyPartTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="* Select Body Part"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/bodyPartSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                android:prompt="@string/select_body_part" />
+
+            <TextView
+                android:id="@+id/targetTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="* Select Target"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/targetSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:prompt="@string/select_target"
+                android:visibility="gone"
+                android:enabled="false"
+                android:alpha="0.5" />
+
+            <TextView
+                android:id="@+id/equipmentTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="* Select Equipment"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/equipmentSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:prompt="@string/select_equipment"
+                android:visibility="gone"
+                android:enabled="false"
+                android:alpha="0.5" />
+
+            <TextView
+                android:id="@+id/secondaryMusclesTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Secondary Muscles (optional)"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/secondaryMusclesEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Secondary Muscles (comma separated)"
+                android:inputType="text"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/instructionsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Instructions (optional)"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/instructionsEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Instructions (comma separated)"
+                android:inputType="text"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/saveExerciseButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save New Exercise"
+                android:layout_marginTop="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
