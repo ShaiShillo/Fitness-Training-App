@@ -45,9 +45,13 @@ android {
 dependencies {
     //Room
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
+    // Navigation
+    implementation (libs.androidx.navigation.fragment.ktx)
+    implementation (libs.androidx.navigation.ui.ktx)
     // Network
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
@@ -67,13 +71,20 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.ktx)
 
+    //Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
+
+    // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android.v142)
+
+    //Glide
     implementation(libs.glide.v4110)
     kapt(libs.compiler.v4110)
 
+
+    //RecyclerView
     implementation(libs.androidx.recyclerview)
     // For control over item selection of both touch and mouse driven selection
     implementation(libs.androidx.recyclerview.selection)
@@ -87,7 +98,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    //
+    implementation (libs.circleimageview)
 }

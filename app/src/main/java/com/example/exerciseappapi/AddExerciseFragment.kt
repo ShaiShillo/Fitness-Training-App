@@ -1,6 +1,8 @@
 package com.example.exerciseappapi
 
 import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -25,8 +27,6 @@ import com.example.exerciseappapi.databinding.FragmentAddExerciseBinding
 import com.example.exerciseappapi.databinding.BottomSheetImageOptionsBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
 
 class AddExerciseFragment : Fragment() {
 
@@ -48,7 +48,7 @@ class AddExerciseFragment : Fragment() {
         ActivityResultContracts.TakePicturePreview(),
         ActivityResultCallback { bitmap ->
             bitmap?.let {
-                val uri = saveImage(it)
+                val uri = saveImage(requireContext(), it)
                 imageUri = uri
                 binding.exerciseImageView.setImageURI(uri)
             }
@@ -200,17 +200,30 @@ class AddExerciseFragment : Fragment() {
         bottomSheetDialog.show()
     }
 
-    private fun saveImage(bitmap: Bitmap): Uri {
-        val file = File(requireContext().filesDir, "images")
-        if (!file.exists()) {
-            file.mkdirs()
+    private fun saveImage(context: Context, bitmap: Bitmap): Uri? {
+        val filename = "${System.currentTimeMillis()}.jpg"
+        var imageUri: Uri? = null
+
+        try {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/MyAppImages")
+            }
+
+            val contentResolver = context.contentResolver
+            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            imageUri?.let { uri ->
+                contentResolver.openOutputStream(uri)?.use { fos ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        val imageFile = File(file, "${System.currentTimeMillis()}.jpg")
-        val fos = FileOutputStream(imageFile)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-        fos.flush()
-        fos.close()
-        return Uri.fromFile(imageFile)
+
+        return imageUri
     }
 
     private fun saveExercise() {
