@@ -240,8 +240,7 @@ class AddExerciseFragment : Fragment() {
             "name" to name.isEmpty(),
             "body part" to (bodyPart.isNullOrEmpty() || bodyPart == getString(R.string.select_body_part)),
             "equipment" to (equipment.isNullOrEmpty() || equipment == getString(R.string.select_equipment)),
-            "target" to (target.isNullOrEmpty() || target == getString(R.string.select_target)),
-            "image" to (imageUri == null)
+            "target" to (target.isNullOrEmpty() || target == getString(R.string.select_target))
         ).mapNotNull { if (it.second) it.first else null }
 
         if (missingFields.isNotEmpty()) {
@@ -250,13 +249,15 @@ class AddExerciseFragment : Fragment() {
             return
         }
 
+        val gifUrl = imageUri?.toString() ?: getPlaceholderUri()
+
         val exercise = Exercise(
             id = System.currentTimeMillis().toString(),
             name = name,
             bodyPart = bodyPart ?: "",
             equipment = equipment ?: "",
             target = target ?: "",
-            gifUrl = imageUri.toString(),
+            gifUrl = gifUrl,
             secondaryMuscles = secondaryMuscles,
             instructions = instructions
         )
@@ -266,6 +267,10 @@ class AddExerciseFragment : Fragment() {
             setFragmentResult("addExerciseResult", bundleOf("shouldReset" to true))
             findNavController().navigate(R.id.action_addExerciseFragment_to_mainFragment)
         }
+    }
+
+    private fun getPlaceholderUri(): String {
+        return Uri.parse("android.resource://${requireContext().packageName}/drawable/placeholder").toString()
     }
 
     private fun clearSpinner(spinner: Spinner) {
