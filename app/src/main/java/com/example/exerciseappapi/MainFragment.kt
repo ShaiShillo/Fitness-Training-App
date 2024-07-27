@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -25,7 +26,6 @@ class MainFragment : Fragment() {
     private val viewModel: ExerciseViewModel by viewModels()
     private lateinit var binding: FragmentMainBinding
     private lateinit var adapter: ExerciseAdapter
-    private lateinit var filterIcon: ImageView
 
     private var selectedBodyPart: String? = null
     private var selectedTarget: String? = null
@@ -41,17 +41,15 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        filterIcon = binding.filterIcon
-
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         setupObservers()
         setupSearch()
         setupFilterIcon()
-        setupAddExerciseButton()
+        setupAddExerciseIcon()
         setupListeners()
-        setupObservers()
         return binding.root
     }
+
     private fun setupListeners() {
         parentFragmentManager.setFragmentResultListener("addExerciseResult", this) { _, bundle ->
             val shouldReset = bundle.getBoolean("shouldReset")
@@ -66,6 +64,7 @@ class MainFragment : Fragment() {
         viewModel.resetFilters()
         // Add any additional logic to reset filters if needed
     }
+
     private fun setupObservers() {
         viewModel.filteredExercises.observe(viewLifecycleOwner, Observer { exercises ->
             if (exercises.isEmpty()) {
@@ -96,7 +95,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupFilterIcon() {
-        filterIcon.setOnClickListener {
+        binding.filterIcon.setOnClickListener {
             if (isFiltered) {
                 resetFilters()
             } else {
@@ -105,8 +104,8 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun setupAddExerciseButton() {
-        binding.addExerciseButton.setOnClickListener {
+    private fun setupAddExerciseIcon() {
+        binding.addExerciseIcon.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_addExerciseFragment)
         }
     }
@@ -192,7 +191,7 @@ class MainFragment : Fragment() {
             filterExercises()
             bottomSheetDialog.dismiss()
             isFiltered = true
-            filterIcon.setImageResource(R.drawable.ic_unfilter)
+            binding.filterIcon.setImageResource(R.drawable.ic_unfilter)
         }
 
         bottomSheetDialog.show()
@@ -209,7 +208,7 @@ class MainFragment : Fragment() {
         searchText = ""
         binding.searchEditText.setText("")
         isFiltered = false
-        filterIcon.setImageResource(R.drawable.ic_filter)
+        binding.filterIcon.setImageResource(R.drawable.ic_filter)
         viewModel.searchExercises(searchText, selectedBodyPart, selectedTarget, selectedEquipment)
     }
 
