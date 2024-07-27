@@ -27,6 +27,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> get() = _searchQuery
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val apiService = ApiClient.apiService
@@ -45,8 +48,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun fetchExercises() {
+        _isLoading.postValue(true)
         viewModelScope.launch {
             exerciseRepository.fetchExercisesFromApi()
+            exerciseRepository.getAllExercises().collect { exercises ->
+                _filteredExercises.postValue(exercises.map { it.toExercise() })
+                _isLoading.postValue(false)
+            }
         }
     }
 
@@ -60,9 +68,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun resetFilters() {
         _searchQuery.value = ""
-        // Reset other filters as needed
+        fetchExercises() // Reset filters and fetch all exercises
     }
-
 
     fun loadTargets(bodyPart: String) {
         viewModelScope.launch {
@@ -71,8 +78,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
-
-
 
     fun loadEquipment(bodyPart: String, target: String) {
         viewModelScope.launch {
@@ -83,9 +88,11 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun searchExercises(name: String, bodyPart: String?, target: String?, equipment: String?) {
+        _isLoading.postValue(true)
         viewModelScope.launch {
             exerciseRepository.getExercises(name, bodyPart, target, equipment).collect { exercises ->
                 _filteredExercises.postValue(exercises)
+                _isLoading.postValue(false)
             }
         }
     }

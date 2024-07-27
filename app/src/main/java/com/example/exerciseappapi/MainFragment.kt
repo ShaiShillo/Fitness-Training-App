@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -67,6 +66,7 @@ class MainFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.filteredExercises.observe(viewLifecycleOwner, Observer { exercises ->
+            binding.loadingProgressBar.visibility = View.GONE
             if (exercises.isEmpty()) {
                 binding.noExercisesTextView.visibility = View.VISIBLE
                 binding.addExerciseButton.visibility = View.VISIBLE
@@ -80,6 +80,11 @@ class MainFragment : Fragment() {
                 }
                 binding.recyclerView.adapter = adapter
             }
+        })
+
+        // Show the loading indicator while data is being fetched
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
     }
 
@@ -198,6 +203,7 @@ class MainFragment : Fragment() {
     }
 
     private fun filterExercises() {
+        binding.loadingProgressBar.visibility = View.VISIBLE
         viewModel.searchExercises(searchText, selectedBodyPart, selectedTarget, selectedEquipment)
     }
 
@@ -209,7 +215,7 @@ class MainFragment : Fragment() {
         binding.searchEditText.setText("")
         isFiltered = false
         binding.filterIcon.setImageResource(R.drawable.ic_filter)
-        viewModel.searchExercises(searchText, selectedBodyPart, selectedTarget, selectedEquipment)
+        filterExercises()
     }
 
     private fun showExerciseDetails(exercise: Exercise) {

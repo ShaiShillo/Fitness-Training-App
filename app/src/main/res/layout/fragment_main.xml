@@ -8,79 +8,92 @@
             type="com.example.exerciseappapi.ExerciseViewModel" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:padding="12dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/searchEditText"
-                android:layout_width="281dp"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginEnd="18dp"
-                android:layout_toStartOf="@+id/addExerciseIcon"
-                android:background="@drawable/search_background"
-                android:drawableStart="@drawable/ic_search"
-                android:drawablePadding="0dp"
-                android:hint="Search exercises by name"
-                android:inputType="text"
-                android:padding="8dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp" />
+                android:layout_marginBottom="16dp">
 
-            <ImageButton
-                android:id="@+id/addExerciseIcon"
+                <EditText
+                    android:id="@+id/searchEditText"
+                    android:layout_width="281dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="18dp"
+                    android:layout_toStartOf="@+id/addExerciseIcon"
+                    android:background="@drawable/search_background"
+                    android:drawableStart="@drawable/ic_search"
+                    android:drawablePadding="0dp"
+                    android:hint="Search exercises by name"
+                    android:inputType="text"
+                    android:padding="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
+
+                <ImageButton
+                    android:id="@+id/addExerciseIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_toStartOf="@+id/filterIcon"
+                    android:background="@drawable/search_background"
+                    android:contentDescription="Add Exercise Icon"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_add" />
+
+                <ImageButton
+                    android:id="@+id/filterIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/search_background"
+                    android:contentDescription="Filter Icon"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_filter" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/noExercisesTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Oops! 😢 We haven't found an exercise for that yet, maybe you can create a new one 😉"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/addExerciseButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:layout_toStartOf="@+id/filterIcon"
-                android:background="@drawable/search_background"
-                android:contentDescription="Add Exercise Icon"
-                android:padding="8dp"
-                android:src="@drawable/ic_add" />
+                android:text="Add Exercise"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
 
-            <ImageButton
-                android:id="@+id/filterIcon"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/search_background"
-                android:contentDescription="Filter Icon"
-                android:padding="8dp"
-                android:src="@drawable/ic_filter" />
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
 
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/noExercisesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Oops! 😢 We haven't found an exercise for that yet, maybe you can create a new one 😉"
-            android:visibility="gone"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <Button
-            android:id="@+id/addExerciseButton"
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Exercise"
-            android:visibility="gone"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
-    </LinearLayout>
+    </FrameLayout>
 </layout>

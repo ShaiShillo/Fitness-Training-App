@@ -14,7 +14,7 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiSe
                 val exerciseEntities = fetchedExercises.map { ExerciseEntity.fromExercise(it) }
                 exerciseDao.insertAllExercises(exerciseEntities)
             } catch (e: Exception) {
-                // Handle the error
+                // TODO: Handle the error
             }
         }
     }
@@ -58,6 +58,13 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiSe
                     (equipment == null || it.equipment.equals(equipment, ignoreCase = true))
         }
         emit(filteredExercises.map { it.toExercise() })
+    }
+
+    fun getAllExercises(): Flow<List<ExerciseEntity>> = flow {
+        val allExercises = withContext(Dispatchers.IO) {
+            exerciseDao.getAllExercises()
+        }
+        emit(allExercises)
     }
 
     suspend fun addExercise(exercise: Exercise) {
