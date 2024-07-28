@@ -1,12 +1,12 @@
 package com.example.exerciseappapi
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import android.content.Context
 
-@Database(entities = [ExerciseEntity::class], version = 4, exportSchema = false)  // Incremented version to 4
+@Database(entities = [ExerciseEntity::class], version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -22,7 +22,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "exercise_database"
-                ).fallbackToDestructiveMigration() // This will destroy and rebuild the database if necessary
+                )
+                    .fallbackToDestructiveMigration() // This will allow destructive migrations
                     .build()
                 INSTANCE = instance
                 instance

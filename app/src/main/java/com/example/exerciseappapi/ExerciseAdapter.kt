@@ -13,7 +13,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.exerciseappapi.databinding.ItemExerciseBinding
 
 class ExerciseAdapter(
-    private val exercises: List<Exercise>,
+    private val exercises: MutableList<Exercise>,
     private val onItemClick: (Exercise) -> Unit
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
@@ -29,6 +29,13 @@ class ExerciseAdapter(
     }
 
     override fun getItemCount(): Int = exercises.size
+
+    fun getExerciseAt(position: Int): Exercise = exercises[position]
+
+    fun removeExerciseAt(position: Int) {
+        exercises.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
     inner class ExerciseViewHolder(private val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {

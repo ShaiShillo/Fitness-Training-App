@@ -5,13 +5,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
-class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiService: ExerciseApiService) {
+class ExerciseRepository(
+    private val exerciseDao: ExerciseDao,
+    private val apiService: ExerciseApiService,
+    private val converters: Converters
+) {
 
     suspend fun fetchExercisesFromApi() {
         withContext(Dispatchers.IO) {
             try {
                 val fetchedExercises = apiService.getExercises()
-                val exerciseEntities = fetchedExercises.map { ExerciseEntity.fromExercise(it) }
+                val exerciseEntities = fetchedExercises.map { converters.exerciseToEntity(it) }
                 exerciseDao.insertAllExercises(exerciseEntities)
             } catch (e: Exception) {
                 // TODO: Handle the error
@@ -49,7 +53,7 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiSe
 
     fun getExercises(name: String, bodyPart: String?, target: String?, equipment: String?): Flow<List<Exercise>> = flow {
         val allExercises = withContext(Dispatchers.IO) {
-            exerciseDao.getAllExercises()
+            exerciseDao.getAllExercises().map { converters.entityToExercise(it) }
         }
         val filteredExercises = allExercises.filter {
             (name.isEmpty() || it.name.contains(name, ignoreCase = true)) &&
@@ -57,19 +61,25 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao, private val apiSe
                     (target == null || it.target.equals(target, ignoreCase = true)) &&
                     (equipment == null || it.equipment.equals(equipment, ignoreCase = true))
         }
-        emit(filteredExercises.map { it.toExercise() })
+        emit(filteredExercises)
     }
 
-    fun getAllExercises(): Flow<List<ExerciseEntity>> = flow {
+    fun getAllExercises(): Flow<List<Exercise>> = flow {
         val allExercises = withContext(Dispatchers.IO) {
-            exerciseDao.getAllExercises()
+            exerciseDao.getAllExercises().map { converters.entityToExercise(it) }
         }
         emit(allExercises)
     }
 
     suspend fun addExercise(exercise: Exercise) {
         withContext(Dispatchers.IO) {
-            exerciseDao.insertExercise(ExerciseEntity.fromExercise(exercise))
+            exerciseDao.insertExercise(converters.exerciseToEntity(exercise))
+        }
+    }
+
+    suspend fun deleteExercise(exercise: Exercise) {
+        withContext(Dispatchers.IO) {
+            exerciseDao.delete(converters.exerciseToEntity(exercise))
         }
     }
 }

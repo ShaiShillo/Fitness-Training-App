@@ -1,6 +1,5 @@
 package com.example.exerciseappapi
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,14 +10,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.BottomSheetFilterBinding
 import com.example.exerciseappapi.databinding.FragmentMainBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainFragment : Fragment() {
 
@@ -46,6 +47,7 @@ class MainFragment : Fragment() {
         setupFilterIcon()
         setupAddExerciseIcon()
         setupListeners()
+        setupSwipeToDelete()
         return binding.root
     }
 
@@ -75,7 +77,7 @@ class MainFragment : Fragment() {
                 binding.noExercisesTextView.visibility = View.GONE
                 binding.addExerciseButton.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
-                adapter = ExerciseAdapter(exercises) { exercise ->
+                adapter = ExerciseAdapter(exercises.toMutableList()) { exercise ->
                     showExerciseDetails(exercise)
                 }
                 binding.recyclerView.adapter = adapter
@@ -217,8 +219,49 @@ class MainFragment : Fragment() {
         binding.filterIcon.setImageResource(R.drawable.ic_filter)
         filterExercises()
     }
+
     private fun showExerciseDetails(exercise: Exercise) {
         val action = MainFragmentDirections.actionMainFragmentToExerciseDetailFragment(exercise)
         findNavController().navigate(action)
+    }
+
+    private fun setupSwipeToDelete() {
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val exercise = adapter.getExerciseAt(position)
+
+                if (exercise.createdByUser) {
+                    showDeleteConfirmationDialog(exercise, position)
+                } else {
+                    adapter.notifyItemChanged(position)
+                    // Optionally show a message that only user-created exercises can be deleted
+                }
+            }
+        })
+
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+    }
+
+    private fun showDeleteConfirmationDialog(exercise: Exercise, position: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Exercise")
+            .setMessage("Are you sure you want to delete this exercise?")
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+                adapter.notifyItemChanged(position)
+            }
+            .setPositiveButton("Delete") { dialog, _ ->
+                viewModel.deleteExercise(exercise)
+                adapter.removeExerciseAt(position)
+                dialog.dismiss()
+            }
+            .show()
     }
 }

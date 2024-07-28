@@ -259,7 +259,8 @@ class AddExerciseFragment : Fragment() {
             target = target ?: "",
             gifUrl = gifUrl,
             secondaryMuscles = secondaryMuscles,
-            instructions = instructions
+            instructions = instructions,
+            createdByUser = true
         )
 
         lifecycleScope.launch {

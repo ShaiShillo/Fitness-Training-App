@@ -33,7 +33,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val apiService = ApiClient.apiService
-        exerciseRepository = ExerciseRepository(exerciseDao, apiService)
+        val converters = Converters()
+        exerciseRepository = ExerciseRepository(exerciseDao, apiService, converters)
         fetchBodyParts()
         fetchExercises()
         fetchAllEquipment()
@@ -52,7 +53,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             exerciseRepository.fetchExercisesFromApi()
             exerciseRepository.getAllExercises().collect { exercises ->
-                _filteredExercises.postValue(exercises.map { it.toExercise() })
+                _filteredExercises.postValue(exercises)
                 _isLoading.postValue(false)
             }
         }
@@ -100,6 +101,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun addExercise(exercise: Exercise) {
         viewModelScope.launch {
             exerciseRepository.addExercise(exercise)
+        }
+    }
+
+    fun deleteExercise(exercise: Exercise) {
+        viewModelScope.launch {
+            exerciseRepository.deleteExercise(exercise)
+            _filteredExercises.value = _filteredExercises.value?.filter { it.id != exercise.id }
         }
     }
 }

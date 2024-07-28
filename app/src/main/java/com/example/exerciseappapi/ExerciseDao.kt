@@ -1,6 +1,7 @@
 package com.example.exerciseappapi
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -28,4 +29,7 @@ interface ExerciseDao {
 
     @Query("SELECT DISTINCT equipment FROM exercises")
     suspend fun getAllEquipment(): List<String>
+
+    @Delete
+    suspend fun delete(exercise: ExerciseEntity)
 }
