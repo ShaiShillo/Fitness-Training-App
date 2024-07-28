@@ -217,11 +217,8 @@ class MainFragment : Fragment() {
         binding.filterIcon.setImageResource(R.drawable.ic_filter)
         filterExercises()
     }
-
     private fun showExerciseDetails(exercise: Exercise) {
-        val intent = Intent(requireContext(), ExerciseDetailActivity::class.java).apply {
-            putExtra("exercise", exercise)
-        }
-        startActivity(intent)
+        val action = MainFragmentDirections.actionMainFragmentToExerciseDetailFragment(exercise)
+        findNavController().navigate(action)
     }
 }

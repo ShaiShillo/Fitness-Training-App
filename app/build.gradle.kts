@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("kotlin-parcelize")
-
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+
+
     //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.navigation.fragment.ktx)
@@ -52,6 +54,7 @@ dependencies {
     // Navigation
     implementation (libs.androidx.navigation.fragment.ktx)
     implementation (libs.androidx.navigation.ui.ktx)
+
     // Network
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
@@ -83,6 +86,7 @@ dependencies {
     implementation (libs.glide)
     kapt(libs.compiler.v4110)
     annotationProcessor (libs.compiler.v4151)
+    implementation (libs.circleimageview)
 
     //Material Design
     implementation (libs.material.v130)
@@ -108,6 +112,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    //
-    implementation (libs.circleimageview)
+
 }

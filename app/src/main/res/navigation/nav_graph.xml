@@ -12,6 +12,10 @@
         <action
             android:id="@+id/action_mainFragment_to_addExerciseFragment"
             app:destination="@id/addExerciseFragment" />
+
+        <action
+            android:id="@+id/action_mainFragment_to_exerciseDetailFragment"
+            app:destination="@id/exerciseDetailFragment" />
     </fragment>
 
     <fragment
@@ -22,5 +26,16 @@
         <action
             android:id="@+id/action_addExerciseFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseDetailFragment"
+        android:name="com.example.exerciseappapi.ExerciseDetailFragment"
+        android:label="ExerciseDetailFragment"
+        tools:layout="@layout/fragment_exercise_detail">
+        <argument
+            android:name="exercise"
+            app:argType="com.example.exerciseappapi.Exercise" />
+
     </fragment>
 </navigation>

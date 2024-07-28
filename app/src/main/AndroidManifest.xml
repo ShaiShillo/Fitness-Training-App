@@ -24,8 +24,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Add this declaration -->
-        <activity android:name=".ExerciseDetailActivity" />
     </application>
 
 </manifest>
