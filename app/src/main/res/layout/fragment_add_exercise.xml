@@ -6,6 +6,9 @@
         <variable
             name="viewModel"
             type="com.example.exerciseappapi.ExerciseViewModel" />
+        <variable
+            name="isEditMode"
+            type="Boolean" />
     </data>
 
     <ScrollView
@@ -134,7 +137,7 @@
                 android:id="@+id/saveExerciseButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save New Exercise"
+                android:text="@{isEditMode ? @string/save_changes : @string/save_new_exercise}"
                 android:layout_marginTop="16dp" />
 
         </LinearLayout>

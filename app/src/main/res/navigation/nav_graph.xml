@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,10 +11,17 @@
         <action
             android:id="@+id/action_mainFragment_to_addExerciseFragment"
             app:destination="@id/addExerciseFragment" />
-
         <action
             android:id="@+id/action_mainFragment_to_exerciseDetailFragment"
             app:destination="@id/exerciseDetailFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_editExerciseFragment"
+            app:destination="@id/addExerciseFragment">
+            <argument
+                android:name="exercise"
+                app:argType="com.example.exerciseappapi.Exercise"
+                app:nullable="true" />
+        </action>
     </fragment>
 
     <fragment
@@ -23,6 +29,10 @@
         android:name="com.example.exerciseappapi.AddExerciseFragment"
         android:label="AddExerciseFragment"
         tools:layout="@layout/fragment_add_exercise" >
+        <argument
+            android:name="exercise"
+            app:argType="com.example.exerciseappapi.Exercise"
+            app:nullable="true" />
         <action
             android:id="@+id/action_addExerciseFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -36,6 +46,5 @@
         <argument
             android:name="exercise"
             app:argType="com.example.exerciseappapi.Exercise" />
-
     </fragment>
 </navigation>

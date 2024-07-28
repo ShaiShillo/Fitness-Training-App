@@ -1,5 +1,6 @@
 package com.example.exerciseappapi
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
@@ -24,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.fragment.findNavController
 import com.example.exerciseappapi.databinding.FragmentAddExerciseBinding
 import com.example.exerciseappapi.databinding.BottomSheetImageOptionsBinding
@@ -35,11 +37,14 @@ class AddExerciseFragment : Fragment() {
     private val viewModel: ExerciseViewModel by viewModels()
     private lateinit var binding: FragmentAddExerciseBinding
     private var imageUri: Uri? = null
+    private var isEditMode: Boolean = false
+    private var exerciseToEdit: Exercise? = null
 
     private val pickImageLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent(),
+        ActivityResultContracts.OpenDocument(),
         ActivityResultCallback { uri ->
             uri?.let {
+                requireContext().contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 imageUri = it
                 binding.exerciseImageView.setImageURI(it)
             }
@@ -57,24 +62,56 @@ class AddExerciseFragment : Fragment() {
         }
     )
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { it.value }) {
+            // All permissions granted
+        } else {
+            Toast.makeText(requireContext(), "Permissions not granted", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Request permissions
+        requestPermissionLauncher.launch(arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ))
+
         binding = FragmentAddExerciseBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        val args: AddExerciseFragmentArgs by navArgs()
+        isEditMode = args.exercise != null
+        exerciseToEdit = args.exercise
+
         setupSpinners()
         setupObservers()
         setupNameEditText()
+
+        if (isEditMode) {
+            exerciseToEdit?.let { populateFieldsForEdit(it) }
+            binding.saveExerciseButton.text = getString(R.string.save_changes)
+            setVisibilityForFields(View.VISIBLE)
+        } else {
+            binding.saveExerciseButton.text = getString(R.string.save_new_exercise)
+        }
 
         binding.exerciseImageView.setOnClickListener {
             showImageOptionsBottomSheet()
         }
 
         binding.saveExerciseButton.setOnClickListener {
-            saveExercise()
+            if (isEditMode) {
+                saveChanges()
+            } else {
+                saveExercise()
+            }
         }
 
         return binding.root
@@ -84,7 +121,7 @@ class AddExerciseFragment : Fragment() {
         binding.exerciseNameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) {
+                if (s.isNullOrEmpty() && !isEditMode) {
                     setVisibilityForFields(View.GONE)
                 } else {
                     setVisibilityForFields(View.VISIBLE)
@@ -110,8 +147,6 @@ class AddExerciseFragment : Fragment() {
         if (visibility == View.VISIBLE) {
             binding.targetSpinner.isEnabled = false
             binding.targetSpinner.alpha = 0.5f
-            binding.equipmentSpinner.isEnabled = false
-            binding.equipmentSpinner.alpha = 0.5f
         }
     }
 
@@ -121,6 +156,14 @@ class AddExerciseFragment : Fragment() {
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, bodyPartList)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.bodyPartSpinner.adapter = adapter
+
+            // If in edit mode, set the spinner to the exercise body part
+            if (isEditMode && exerciseToEdit != null) {
+                val position = bodyPartList.indexOf(exerciseToEdit!!.bodyPart)
+                if (position != -1) {
+                    binding.bodyPartSpinner.setSelection(position)
+                }
+            }
         }
 
         binding.bodyPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -133,10 +176,7 @@ class AddExerciseFragment : Fragment() {
                 } else {
                     binding.targetSpinner.isEnabled = false
                     binding.targetSpinner.alpha = 0.5f
-                    binding.equipmentSpinner.isEnabled = false
-                    binding.equipmentSpinner.alpha = 0.5f
                     clearSpinner(binding.targetSpinner)
-                    clearSpinner(binding.equipmentSpinner)
                 }
             }
 
@@ -148,30 +188,30 @@ class AddExerciseFragment : Fragment() {
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, targetList)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.targetSpinner.adapter = adapter
-        }
 
-        binding.targetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedTarget = parent.getItemAtPosition(position) as String
-                if (selectedTarget != getString(R.string.select_target)) {
-                    binding.equipmentSpinner.isEnabled = true
-                    binding.equipmentSpinner.alpha = 1.0f
-                    viewModel.fetchAllEquipment()
-                } else {
-                    binding.equipmentSpinner.isEnabled = false
-                    binding.equipmentSpinner.alpha = 0.5f
-                    clearSpinner(binding.equipmentSpinner)
+            // If in edit mode, set the spinner to the exercise target
+            if (isEditMode && exerciseToEdit != null) {
+                val position = targetList.indexOf(exerciseToEdit!!.target)
+                if (position != -1) {
+                    binding.targetSpinner.setSelection(position)
                 }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
+        viewModel.fetchAllEquipment()
         viewModel.equipment.observe(viewLifecycleOwner) { equipment ->
             val equipmentList = listOf(getString(R.string.select_equipment)) + equipment
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, equipmentList)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.equipmentSpinner.adapter = adapter
+
+            // If in edit mode, set the spinner to the exercise equipment
+            if (isEditMode && exerciseToEdit != null) {
+                val position = equipmentList.indexOf(exerciseToEdit!!.equipment)
+                if (position != -1) {
+                    binding.equipmentSpinner.setSelection(position)
+                }
+            }
         }
     }
 
@@ -190,7 +230,7 @@ class AddExerciseFragment : Fragment() {
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.chooseImageButton.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            pickImageLauncher.launch(arrayOf("image/*"))
             bottomSheetDialog.dismiss()
         }
 
@@ -270,6 +310,48 @@ class AddExerciseFragment : Fragment() {
         }
     }
 
+    private fun saveChanges() {
+        val name = binding.exerciseNameEditText.text.toString()
+        val bodyPart = binding.bodyPartSpinner.selectedItem as? String
+        val equipment = binding.equipmentSpinner.selectedItem as? String
+        val target = binding.targetSpinner.selectedItem as? String
+        val secondaryMuscles = binding.secondaryMusclesEditText.text.toString().split(",").filter { it.isNotEmpty() }
+        val instructions = binding.instructionsEditText.text.toString().split(",").filter { it.isNotEmpty() }
+
+        val missingFields = listOf(
+            "name" to name.isEmpty(),
+            "body part" to (bodyPart.isNullOrEmpty() || bodyPart == getString(R.string.select_body_part)),
+            "equipment" to (equipment.isNullOrEmpty() || equipment == getString(R.string.select_equipment)),
+            "target" to (target.isNullOrEmpty() || target == getString(R.string.select_target))
+        ).mapNotNull { if (it.second) it.first else null }
+
+        if (missingFields.isNotEmpty()) {
+            val message = "Please fill the following fields: ${missingFields.joinToString(", ")}"
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val gifUrl = imageUri?.toString() ?: exerciseToEdit?.gifUrl ?: getPlaceholderUri()
+
+        val exercise = exerciseToEdit?.copy(
+            name = name,
+            bodyPart = bodyPart ?: "",
+            equipment = equipment ?: "",
+            target = target ?: "",
+            gifUrl = gifUrl,
+            secondaryMuscles = secondaryMuscles,
+            instructions = instructions
+        )
+
+        exercise?.let {
+            lifecycleScope.launch {
+                viewModel.updateExercise(it)
+                setFragmentResult("addExerciseResult", bundleOf("shouldReset" to true))
+                findNavController().navigate(R.id.action_addExerciseFragment_to_mainFragment)
+            }
+        }
+    }
+
     private fun getPlaceholderUri(): String {
         return Uri.parse("android.resource://${requireContext().packageName}/drawable/placeholder").toString()
     }
@@ -278,5 +360,67 @@ class AddExerciseFragment : Fragment() {
         val emptyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listOf<String>())
         emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = emptyAdapter
+    }
+
+    private fun populateFieldsForEdit(exercise: Exercise) {
+        binding.exerciseNameEditText.setText(exercise.name)
+        binding.secondaryMusclesEditText.setText(exercise.secondaryMuscles.joinToString(","))
+        binding.instructionsEditText.setText(exercise.instructions.joinToString(","))
+
+        exercise.gifUrl?.let {
+            imageUri = Uri.parse(it)
+            binding.exerciseImageView.setImageURI(imageUri)
+        }
+
+        setVisibilityForFields(View.VISIBLE)
+
+        viewModel.bodyParts.observe(viewLifecycleOwner) { bodyParts ->
+            val bodyPartList = listOf(getString(R.string.select_body_part)) + bodyParts
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, bodyPartList)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.bodyPartSpinner.adapter = adapter
+
+            // Set the spinner to the exercise body part
+            val position = bodyPartList.indexOf(exercise.bodyPart)
+            if (position != -1) {
+                binding.bodyPartSpinner.setSelection(position)
+            }
+        }
+
+        viewModel.targets.observe(viewLifecycleOwner) { targets ->
+            val targetList = listOf(getString(R.string.select_target)) + targets
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, targetList)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.targetSpinner.adapter = adapter
+
+            // Set the spinner to the exercise target
+            val position = targetList.indexOf(exercise.target)
+            if (position != -1) {
+                binding.targetSpinner.setSelection(position)
+            }
+        }
+
+        viewModel.fetchAllEquipment()
+        viewModel.equipment.observe(viewLifecycleOwner) { equipment ->
+            val equipmentList = listOf(getString(R.string.select_equipment)) + equipment
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, equipmentList)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.equipmentSpinner.adapter = adapter
+
+            // Set the spinner to the exercise equipment
+            val position = equipmentList.indexOf(exercise.equipment)
+            if (position != -1) {
+                binding.equipmentSpinner.setSelection(position)
+            }
+        }
+    }
+
+    private fun getSpinnerPosition(spinner: Spinner, value: String): Int {
+        for (i in 0 until spinner.count) {
+            if (spinner.getItemAtPosition(i) == value) {
+                return i
+            }
+        }
+        return 0
     }
 }

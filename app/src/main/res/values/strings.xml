@@ -11,4 +11,7 @@
     <string name="search_exercises_by_name">Search exercises by name</string>
     <string name="add_image">Add Image</string>
     <string name="exercise_gif_image">Exercise GIF/Image</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="save_new_exercise">Save New Exercise</string>
+
 </resources>

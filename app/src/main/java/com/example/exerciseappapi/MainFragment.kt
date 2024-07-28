@@ -77,9 +77,11 @@ class MainFragment : Fragment() {
                 binding.noExercisesTextView.visibility = View.GONE
                 binding.addExerciseButton.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
-                adapter = ExerciseAdapter(exercises.toMutableList()) { exercise ->
+                adapter = ExerciseAdapter(exercises.toMutableList(), { exercise ->
                     showExerciseDetails(exercise)
-                }
+                }, { exercise ->
+                    editExercise(exercise)
+                })
                 binding.recyclerView.adapter = adapter
             }
         })
@@ -113,7 +115,8 @@ class MainFragment : Fragment() {
 
     private fun setupAddExerciseIcon() {
         binding.addExerciseIcon.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addExerciseFragment)
+            val action = MainFragmentDirections.actionMainFragmentToAddExerciseFragment(null)
+            findNavController().navigate(action)
         }
     }
 
@@ -222,6 +225,11 @@ class MainFragment : Fragment() {
 
     private fun showExerciseDetails(exercise: Exercise) {
         val action = MainFragmentDirections.actionMainFragmentToExerciseDetailFragment(exercise)
+        findNavController().navigate(action)
+    }
+
+    private fun editExercise(exercise: Exercise) {
+        val action = MainFragmentDirections.actionMainFragmentToAddExerciseFragment(exercise)
         findNavController().navigate(action)
     }
 

@@ -82,4 +82,10 @@ class ExerciseRepository(
             exerciseDao.delete(converters.exerciseToEntity(exercise))
         }
     }
+
+    suspend fun updateExercise(exercise: Exercise) {
+        withContext(Dispatchers.IO) {
+            exerciseDao.updateExercise(converters.exerciseToEntity(exercise))
+        }
+    }
 }

@@ -14,7 +14,8 @@ import com.example.exerciseappapi.databinding.ItemExerciseBinding
 
 class ExerciseAdapter(
     private val exercises: MutableList<Exercise>,
-    private val onItemClick: (Exercise) -> Unit
+    private val onItemClick: (Exercise) -> Unit,
+    private val onEditClick: (Exercise) -> Unit
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
@@ -26,6 +27,7 @@ class ExerciseAdapter(
         val exercise = exercises[position]
         holder.bind(exercise)
         holder.itemView.setOnClickListener { onItemClick(exercise) }
+        holder.binding.editButton.setOnClickListener { onEditClick(exercise) }
     }
 
     override fun getItemCount(): Int = exercises.size
@@ -37,7 +39,7 @@ class ExerciseAdapter(
         notifyItemRemoved(position)
     }
 
-    inner class ExerciseViewHolder(private val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ExerciseViewHolder(val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
             binding.loadingProgressBar.visibility = View.VISIBLE
             binding.exerciseGif.setImageDrawable(null)  // Reset the ImageView to prevent image flickering
@@ -70,6 +72,9 @@ class ExerciseAdapter(
             binding.exerciseName.text = exercise.name.capitalizeWords()
             "Target: ${exercise.target.capitalizeWords()}".also { binding.exerciseTarget.text = it }
             "Equipment: ${exercise.equipment.capitalizeWords()}".also { binding.exerciseEquipment.text = it }
+
+            // Show edit button only if createdByUser is true
+            binding.editButton.visibility = if (exercise.createdByUser) View.VISIBLE else View.GONE
         }
     }
 }

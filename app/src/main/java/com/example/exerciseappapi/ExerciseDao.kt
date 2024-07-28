@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface ExerciseDao {
@@ -32,4 +33,7 @@ interface ExerciseDao {
 
     @Delete
     suspend fun delete(exercise: ExerciseEntity)
+
+    @Update
+    suspend fun updateExercise(exercise: ExerciseEntity)
 }

@@ -30,6 +30,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _isEditMode = MutableLiveData<Boolean>()
+    val isEditMode: LiveData<Boolean> get() = _isEditMode
+
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val apiService = ApiClient.apiService
@@ -38,6 +41,11 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         fetchBodyParts()
         fetchExercises()
         fetchAllEquipment()
+        _isEditMode.value = false
+    }
+
+    fun setEditMode(isEdit: Boolean) {
+        _isEditMode.value = isEdit
     }
 
     private fun fetchBodyParts() {
@@ -108,6 +116,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             exerciseRepository.deleteExercise(exercise)
             _filteredExercises.value = _filteredExercises.value?.filter { it.id != exercise.id }
+        }
+    }
+
+    fun updateExercise(exercise: Exercise) {
+        viewModelScope.launch {
+            exerciseRepository.updateExercise(exercise)
         }
     }
 }
