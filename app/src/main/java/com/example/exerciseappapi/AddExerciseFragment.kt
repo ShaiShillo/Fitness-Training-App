@@ -37,7 +37,6 @@ class AddExerciseFragment : Fragment() {
     private val viewModel: ExerciseViewModel by viewModels()
     private lateinit var binding: FragmentAddExerciseBinding
     private var imageUri: Uri? = null
-    private var isEditMode: Boolean = false
     private var exerciseToEdit: Exercise? = null
 
     private val pickImageLauncher = registerForActivityResult(
@@ -82,23 +81,24 @@ class AddExerciseFragment : Fragment() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         ))
 
-        binding = FragmentAddExerciseBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
+        binding = FragmentAddExerciseBinding.inflate(inflater, container, false).apply {
+            viewModel = this@AddExerciseFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
 
         val args: AddExerciseFragmentArgs by navArgs()
-        isEditMode = args.exercise != null
         exerciseToEdit = args.exercise
 
         setupSpinners()
         setupObservers()
         setupNameEditText()
 
-        if (isEditMode) {
-            exerciseToEdit?.let { populateFieldsForEdit(it) }
+        if (exerciseToEdit != null) {
+            viewModel.setEditMode(true)
+            populateFieldsForEdit(exerciseToEdit!!)
             binding.saveExerciseButton.text = getString(R.string.save_changes)
-            setVisibilityForFields(View.VISIBLE)
         } else {
+            viewModel.setEditMode(false)
             binding.saveExerciseButton.text = getString(R.string.save_new_exercise)
         }
 
@@ -107,7 +107,7 @@ class AddExerciseFragment : Fragment() {
         }
 
         binding.saveExerciseButton.setOnClickListener {
-            if (isEditMode) {
+            if (viewModel.isEditMode.value == true) {
                 saveChanges()
             } else {
                 saveExercise()
@@ -121,7 +121,7 @@ class AddExerciseFragment : Fragment() {
         binding.exerciseNameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty() && !isEditMode) {
+                if (s.isNullOrEmpty() && viewModel.isEditMode.value != true) {
                     setVisibilityForFields(View.GONE)
                 } else {
                     setVisibilityForFields(View.VISIBLE)
@@ -158,7 +158,7 @@ class AddExerciseFragment : Fragment() {
             binding.bodyPartSpinner.adapter = adapter
 
             // If in edit mode, set the spinner to the exercise body part
-            if (isEditMode && exerciseToEdit != null) {
+            if (viewModel.isEditMode.value == true && exerciseToEdit != null) {
                 val position = bodyPartList.indexOf(exerciseToEdit!!.bodyPart)
                 if (position != -1) {
                     binding.bodyPartSpinner.setSelection(position)
@@ -190,7 +190,7 @@ class AddExerciseFragment : Fragment() {
             binding.targetSpinner.adapter = adapter
 
             // If in edit mode, set the spinner to the exercise target
-            if (isEditMode && exerciseToEdit != null) {
+            if (viewModel.isEditMode.value == true && exerciseToEdit != null) {
                 val position = targetList.indexOf(exerciseToEdit!!.target)
                 if (position != -1) {
                     binding.targetSpinner.setSelection(position)
@@ -206,7 +206,7 @@ class AddExerciseFragment : Fragment() {
             binding.equipmentSpinner.adapter = adapter
 
             // If in edit mode, set the spinner to the exercise equipment
-            if (isEditMode && exerciseToEdit != null) {
+            if (viewModel.isEditMode.value == true && exerciseToEdit != null) {
                 val position = equipmentList.indexOf(exerciseToEdit!!.equipment)
                 if (position != -1) {
                     binding.equipmentSpinner.setSelection(position)
@@ -413,14 +413,5 @@ class AddExerciseFragment : Fragment() {
                 binding.equipmentSpinner.setSelection(position)
             }
         }
-    }
-
-    private fun getSpinnerPosition(spinner: Spinner, value: String): Int {
-        for (i in 0 until spinner.count) {
-            if (spinner.getItemAtPosition(i) == value) {
-                return i
-            }
-        }
-        return 0
     }
 }
