@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.FragmentWorkoutsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class WorkoutsFragment : Fragment() {
 
@@ -72,9 +74,11 @@ class WorkoutsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.workouts.observe(viewLifecycleOwner, Observer { workouts ->
-            adapter.setWorkouts(workouts.map { it.toWorkout() })
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.workouts.collect { workouts ->
+                adapter.setWorkouts(workouts.map { it.toWorkout() })
+            }
+        }
     }
 
     private fun editWorkout(workout: Workout) {

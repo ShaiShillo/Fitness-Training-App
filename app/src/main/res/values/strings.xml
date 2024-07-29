@@ -15,5 +15,9 @@
     <string name="save_new_exercise">Save New Exercise</string>
     <string name="edit_workout">Edit Workout</string>
     <string name="delete_workout">Delete Workout</string>
+    <string name="home">Home</string>
+    <string name="exercises">Exercises</string>
+    <string name="workouts">Workouts</string>
+    <string name="settings">Settings</string>
 
 </resources>
