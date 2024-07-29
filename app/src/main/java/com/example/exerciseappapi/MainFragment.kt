@@ -3,6 +3,7 @@ package com.example.exerciseappapi
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exerciseappapi.Exercise
+import com.example.exerciseappapi.ExerciseAdapter
+import com.example.exerciseappapi.ExerciseViewModel
 import com.example.exerciseappapi.databinding.BottomSheetFilterBinding
 import com.example.exerciseappapi.databinding.FragmentMainBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -32,6 +36,8 @@ class MainFragment : Fragment() {
     private var selectedEquipment: String? = null
     private var searchText: String = ""
     private var isFiltered: Boolean = false
+    private var isSelectingExercises: Boolean = false
+    private val selectedExercises = mutableListOf<Exercise>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +47,12 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
+        binding.buttonGoToWorkouts.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_workoutsFragment)
+        }
+
+        isSelectingExercises = arguments?.getBoolean("isSelectingExercises") ?: false
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         setupObservers()
         setupSearch()
@@ -48,7 +60,100 @@ class MainFragment : Fragment() {
         setupAddExerciseIcon()
         setupListeners()
         setupSwipeToDelete()
+
+        viewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            adapter.setExercises(exercises)
+            viewModel.filteredExercises.observe(viewLifecycleOwner) { exercises ->
+                adapter.setExercises(exercises)
+            }
+        }
+
+        if (isSelectingExercises) {
+            setupExerciseSelection()
+        }
+
+        viewModel.loadExercises() // Load exercises when the fragment starts
+
         return binding.root
+    }
+
+    private fun setupExerciseSelection() {
+        binding.confirmSelectionButton.visibility = View.VISIBLE
+        binding.confirmSelectionButton.setOnClickListener {
+            // Log selected exercises
+            Log.d("MainFragment", "Selected exercises: ${selectedExercises.size}")
+
+            // Pass selected exercises back to the previous fragment
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("selectedExercises", selectedExercises.toList())
+            findNavController().navigateUp()
+        }
+
+        adapter = ExerciseAdapter(
+            viewModel.exercises.value.orEmpty().toMutableList(),
+            onItemClick = {}, // No-op lambda for item click
+            onEditClick = {}, // No-op lambda for edit click
+            isSelectingExercises = true,
+            onExerciseSelected = { exercise, isChecked ->
+                if (isChecked) {
+                    selectedExercises.add(exercise)
+                } else {
+                    selectedExercises.remove(exercise)
+                }
+                // Log the selection status
+                Log.d("MainFragment", "Exercise: ${exercise.name}, Selected: $isChecked")
+            }
+        )
+
+        binding.recyclerView.adapter = adapter
+    }
+
+
+    private fun setupObservers() {
+        viewModel.exercises.observe(viewLifecycleOwner, Observer { exercises ->
+            binding.loadingProgressBar.visibility = View.GONE
+            if (exercises.isEmpty()) {
+                binding.noExercisesTextView.visibility = View.VISIBLE
+                binding.addExerciseButton.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.GONE
+            } else {
+                binding.noExercisesTextView.visibility = View.GONE
+                binding.addExerciseButton.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
+
+                if (isSelectingExercises) {
+                    adapter = ExerciseAdapter(
+                        exercises.toMutableList(),
+                        onItemClick = {}, // No-op lambda for item click
+                        onEditClick = {}, // No-op lambda for edit click
+                        isSelectingExercises = true,
+                        onExerciseSelected = { exercise, isChecked ->
+                            if (isChecked) {
+                                selectedExercises.add(exercise)
+                            } else {
+                                selectedExercises.remove(exercise)
+                            }
+                        }
+                    )
+                } else {
+                    adapter = ExerciseAdapter(
+                        exercises.toMutableList(),
+                        onItemClick = { exercise ->
+                            showExerciseDetails(exercise)
+                        },
+                        onEditClick = { exercise ->
+                            editExercise(exercise)
+                        }
+                    )
+                }
+
+                binding.recyclerView.adapter = adapter
+            }
+        })
+
+        // Show the loading indicator while data is being fetched
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        })
     }
 
     private fun setupListeners() {
@@ -64,32 +169,6 @@ class MainFragment : Fragment() {
         binding.searchEditText.text.clear()
         viewModel.resetFilters()
         // Add any additional logic to reset filters if needed
-    }
-
-    private fun setupObservers() {
-        viewModel.filteredExercises.observe(viewLifecycleOwner, Observer { exercises ->
-            binding.loadingProgressBar.visibility = View.GONE
-            if (exercises.isEmpty()) {
-                binding.noExercisesTextView.visibility = View.VISIBLE
-                binding.addExerciseButton.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.GONE
-            } else {
-                binding.noExercisesTextView.visibility = View.GONE
-                binding.addExerciseButton.visibility = View.GONE
-                binding.recyclerView.visibility = View.VISIBLE
-                adapter = ExerciseAdapter(exercises.toMutableList(), { exercise ->
-                    showExerciseDetails(exercise)
-                }, { exercise ->
-                    editExercise(exercise)
-                })
-                binding.recyclerView.adapter = adapter
-            }
-        })
-
-        // Show the loading indicator while data is being fetched
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
     }
 
     private fun setupSearch() {
@@ -205,6 +284,11 @@ class MainFragment : Fragment() {
         }
 
         bottomSheetDialog.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadExercises()
     }
 
     private fun filterExercises() {

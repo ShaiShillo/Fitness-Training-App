@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import com.example.exerciseappapi.ExerciseEntity
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -33,6 +34,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _isEditMode = MutableLiveData<Boolean>()
     val isEditMode: LiveData<Boolean> get() = _isEditMode
 
+    private val _exercises = MutableLiveData<List<Exercise>>()
+    val exercises: LiveData<List<Exercise>> get() = _exercises
+
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val apiService = ApiClient.apiService
@@ -42,6 +46,21 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         fetchExercises()
         fetchAllEquipment()
         _isEditMode.value = false
+    }
+
+    fun setExercises(exerciseList: List<Exercise>) {
+        _exercises.value = exerciseList
+    }
+
+    fun loadExercises() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            exerciseRepository.getAllExercises().collect { exerciseEntities ->
+                _isLoading.postValue(false)
+                val exerciseList = exerciseEntities.map { it }
+                _exercises.postValue(exerciseList)
+            }
+        }
     }
 
     fun setEditMode(isEdit: Boolean) {

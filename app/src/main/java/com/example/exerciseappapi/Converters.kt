@@ -54,4 +54,18 @@ class Converters {
     fun entityListToExerciseList(entities: List<ExerciseEntity>): List<Exercise> {
         return entities.map { entityToExercise(it) }
     }
+
+    fun ExerciseEntity.toExercise(): Exercise {
+        return Exercise(
+            id = this.id,
+            name = this.name,
+            bodyPart = this.bodyPart,
+            equipment = this.equipment,
+            gifUrl = this.gifUrl,
+            target = this.target,
+            secondaryMuscles = this.secondaryMuscles,
+            instructions = this.instructions
+        )
+    }
+
 }

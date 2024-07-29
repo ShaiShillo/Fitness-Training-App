@@ -15,8 +15,16 @@ import com.example.exerciseappapi.databinding.ItemExerciseBinding
 class ExerciseAdapter(
     private val exercises: MutableList<Exercise>,
     private val onItemClick: (Exercise) -> Unit,
-    private val onEditClick: (Exercise) -> Unit
+    private val onEditClick: (Exercise) -> Unit,
+    private val isSelectingExercises: Boolean = false,
+    private val onExerciseSelected: (Exercise, Boolean) -> Unit = { _, _ -> }
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
+
+    fun setExercises(newExercises: List<Exercise>) {
+        exercises.clear()
+        exercises.addAll(newExercises)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         val binding = ItemExerciseBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -26,8 +34,10 @@ class ExerciseAdapter(
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = exercises[position]
         holder.bind(exercise)
-        holder.itemView.setOnClickListener { onItemClick(exercise) }
-        holder.binding.editButton.setOnClickListener { onEditClick(exercise) }
+        if (!isSelectingExercises) {
+            holder.itemView.setOnClickListener { onItemClick(exercise) }
+            holder.binding.editButton.setOnClickListener { onEditClick(exercise) }
+        }
     }
 
     override fun getItemCount(): Int = exercises.size
@@ -41,6 +51,16 @@ class ExerciseAdapter(
 
     inner class ExerciseViewHolder(val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
+            if (isSelectingExercises) {
+                binding.checkbox.visibility = View.VISIBLE
+                binding.editButton.visibility = View.GONE
+                binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                    onExerciseSelected(exercise, isChecked)
+                }
+            } else {
+                binding.checkbox.visibility = View.GONE
+                binding.editButton.visibility = if (exercise.createdByUser) View.VISIBLE else View.GONE
+            }
             binding.loadingProgressBar.visibility = View.VISIBLE
             binding.exerciseGif.setImageDrawable(null)  // Reset the ImageView to prevent image flickering
             Glide.with(binding.root.context)
@@ -72,9 +92,6 @@ class ExerciseAdapter(
             binding.exerciseName.text = exercise.name.capitalizeWords()
             "Target: ${exercise.target.capitalizeWords()}".also { binding.exerciseTarget.text = it }
             "Equipment: ${exercise.equipment.capitalizeWords()}".also { binding.exerciseEquipment.text = it }
-
-            // Show edit button only if createdByUser is true
-            binding.editButton.visibility = if (exercise.createdByUser) View.VISIBLE else View.GONE
         }
     }
 }
