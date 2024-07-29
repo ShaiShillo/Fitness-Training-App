@@ -46,6 +46,12 @@ class MainFragment : Fragment() {
 
         isSelectingExercises = arguments?.getBoolean("isSelectingExercises") ?: false
 
+        // Retrieve existing selected exercises
+        val existingSelectedExercises = arguments?.getParcelableArrayList<Exercise>("selectedExercises")
+        if (existingSelectedExercises != null) {
+            selectedExercises.addAll(existingSelectedExercises)
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         setupObservers()
         setupSearch()

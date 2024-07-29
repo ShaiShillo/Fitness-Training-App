@@ -41,6 +41,7 @@ class CreateWorkoutFragment : Fragment() {
         binding.fabAddExercise.setOnClickListener {
             val bundle = Bundle().apply {
                 putBoolean("isSelectingExercises", true)
+                putParcelableArrayList("selectedExercises", ArrayList(selectedExercises))
             }
             findNavController().navigate(R.id.action_createWorkoutFragment_to_mainFragment, bundle)
         }
