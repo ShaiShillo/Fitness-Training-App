@@ -7,6 +7,7 @@ import com.example.exerciseappapi.databinding.ItemWorkoutBinding
 
 class WorkoutAdapter(
     private val workouts: MutableList<Workout>,
+    private val onItemClick: (Workout) -> Unit,
     private val onEditClick: (Workout) -> Unit,
     private val onDeleteClick: (Workout, Int) -> Unit
 ) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
@@ -34,6 +35,10 @@ class WorkoutAdapter(
         fun bind(workout: Workout, position: Int) {
             binding.workout = workout
             binding.executePendingBindings()
+
+            binding.root.setOnClickListener {
+                onItemClick(workout)
+            }
 
             binding.editButton.setOnClickListener {
                 onEditClick(workout)

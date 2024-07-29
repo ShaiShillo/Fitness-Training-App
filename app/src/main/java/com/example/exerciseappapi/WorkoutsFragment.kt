@@ -51,6 +51,10 @@ class WorkoutsFragment : Fragment() {
         binding.workoutsRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = WorkoutAdapter(
             mutableListOf(),
+            onItemClick = { workout ->
+                val action = WorkoutsFragmentDirections.actionWorkoutsFragmentToWorkoutDetailFragment(workout)
+                findNavController().navigate(action)
+            },
             onEditClick = { workout ->
                 editWorkout(workout)
             },

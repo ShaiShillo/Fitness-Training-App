@@ -28,7 +28,6 @@
                 app:argType="com.example.exerciseappapi.Exercise"
                 app:nullable="true" />
         </action>
-
     </fragment>
 
     <fragment
@@ -59,10 +58,18 @@
         android:id="@+id/workoutsFragment"
         android:name="com.example.exerciseappapi.WorkoutsFragment"
         android:label="WorkoutsFragment"
-        tools:layout="@layout/fragment_workouts" >
-    <action
-        android:id="@+id/action_workoutsFragment_to_createWorkoutFragment"
-        app:destination="@id/createWorkoutFragment" />
+        tools:layout="@layout/fragment_workouts">
+        <action
+            android:id="@+id/action_workoutsFragment_to_createWorkoutFragment"
+            app:destination="@id/createWorkoutFragment" />
+        <action
+            android:id="@+id/action_workoutsFragment_to_workoutDetailFragment"
+            app:destination="@id/workoutDetailFragment">
+            <argument
+                android:name="workout"
+                app:argType="com.example.exerciseappapi.Workout"
+                app:nullable="true" />
+        </action>
     </fragment>
 
     <fragment
@@ -76,6 +83,19 @@
         <action
             android:id="@+id/action_createWorkoutFragment_to_addExerciseFragment"
             app:destination="@id/addExerciseFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutDetailFragment"
+        android:name="com.example.exerciseappapi.WorkoutDetailFragment"
+        android:label="Workout Details">
+        <argument
+            android:name="workout"
+            app:argType="com.example.exerciseappapi.Workout"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_workoutDetailFragment_to_exerciseDetailFragment"
+            app:destination="@id/exerciseDetailFragment" />
     </fragment>
 
 </navigation>
