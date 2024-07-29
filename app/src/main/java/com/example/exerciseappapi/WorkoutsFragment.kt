@@ -49,6 +49,11 @@ class WorkoutsFragment : Fragment() {
             }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchWorkouts() // Ensure workouts are loaded when the fragment becomes visible
+    }
+
     private fun setupRecyclerView() {
         binding.workoutsRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = WorkoutAdapter(
