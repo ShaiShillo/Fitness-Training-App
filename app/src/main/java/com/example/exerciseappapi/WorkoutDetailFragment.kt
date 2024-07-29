@@ -51,7 +51,8 @@ class WorkoutDetailFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onEditClick = {}, // No-op lambda for edit click
-            isSelectingExercises = false
+            isSelectingExercises = false,
+            showEditButton = false // Pass the flag as false to hide the edit button
         )
         binding.exercisesRecyclerView.adapter = adapter
     }

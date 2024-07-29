@@ -17,6 +17,7 @@ class ExerciseAdapter(
     private val onItemClick: (Exercise) -> Unit,
     private val onEditClick: (Exercise) -> Unit,
     private val isSelectingExercises: Boolean = false,
+    private val showEditButton: Boolean = true,
     private val onExerciseSelected: (Exercise, Boolean) -> Unit = { _, _ -> }
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
@@ -59,7 +60,7 @@ class ExerciseAdapter(
                 }
             } else {
                 binding.checkbox.visibility = View.GONE
-                binding.editButton.visibility = if (exercise.createdByUser) View.VISIBLE else View.GONE
+                binding.editButton.visibility = if (exercise.createdByUser && showEditButton) View.VISIBLE else View.GONE
             }
             binding.loadingProgressBar.visibility = View.VISIBLE
             binding.exerciseGif.setImageDrawable(null)  // Reset the ImageView to prevent image flickering
