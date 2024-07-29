@@ -63,7 +63,11 @@
                     android:src="@drawable/ic_filter" />
 
             </RelativeLayout>
-
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp">
             <TextView
                 android:id="@+id/noExercisesTextView"
                 android:layout_width="match_parent"
@@ -75,33 +79,29 @@
                 android:padding="16dp"
                 android:layout_marginBottom="16dp"/>
 
-            <Button
-                android:id="@+id/addExerciseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Exercise"
-                android:visibility="gone"
-                android:layout_gravity="center"/>
 
-            <Button
-                android:id="@+id/buttonGoToWorkouts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Go to Workouts"
-                android:layout_gravity="center"/>
-            <Button
-                android:id="@+id/confirmSelectionButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Confirm Selection"
-                android:layout_marginTop="16dp"
-                android:visibility="visible"
-                android:layout_gravity="center"
-                app:layout_constraintTop_toBottomOf="@id/buttonGoToWorkouts"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="parent" />
 
+        <Button
+            android:id="@+id/buttonGoToWorkouts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+
+            android:text="Go to Workouts" />
+
+        <Button
+            android:id="@+id/confirmSelectionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Confirm Selection"
+            android:visibility="visible"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonGoToWorkouts" />
+    </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"

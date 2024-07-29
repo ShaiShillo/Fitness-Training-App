@@ -6,20 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.exerciseappapi.Workout
-import com.example.exerciseappapi.WorkoutAdapter
 import com.example.exerciseappapi.databinding.FragmentWorkoutsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class WorkoutsFragment : Fragment() {
 
+    private val viewModel: ExerciseViewModel by viewModels()
     private var _binding: FragmentWorkoutsBinding? = null
     private val binding get() = _binding!!
-    private val workouts = mutableListOf<Workout>()
     private lateinit var adapter: WorkoutAdapter
 
     override fun onCreateView(
@@ -35,23 +35,22 @@ class WorkoutsFragment : Fragment() {
         setupRecyclerView()
         setupFab()
         setupSwipeToDelete()
+        setupObservers()
 
         // Handle the received new workout from CreateWorkoutFragment
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("newWorkoutBundle")
-            ?.observe(viewLifecycleOwner, { bundle ->
-                val workout = bundle?.getParcelable<Workout>("newWorkout")
-                if (workout != null) {
-                    Log.d("WorkoutsFragment", "New workout received: ${workout.workoutName}")
-                    workouts.add(workout)
-                    adapter.notifyDataSetChanged()
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("workoutAdded")
+            ?.observe(viewLifecycleOwner) { workoutAdded ->
+                if (workoutAdded == true) {
+                    Log.d("WorkoutsFragment", "New workout added")
+                    viewModel.fetchWorkouts()
                 }
-            })
+            }
     }
 
     private fun setupRecyclerView() {
         binding.workoutsRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = WorkoutAdapter(
-            workouts,
+            mutableListOf(),
             onEditClick = { workout ->
                 editWorkout(workout)
             },
@@ -66,6 +65,12 @@ class WorkoutsFragment : Fragment() {
         binding.fabAddWorkout.setOnClickListener {
             findNavController().navigate(R.id.action_workoutsFragment_to_createWorkoutFragment)
         }
+    }
+
+    private fun setupObservers() {
+        viewModel.workouts.observe(viewLifecycleOwner, Observer { workouts ->
+            adapter.setWorkouts(workouts.map { it.toWorkout() })
+        })
     }
 
     private fun editWorkout(workout: Workout) {
@@ -100,7 +105,7 @@ class WorkoutsFragment : Fragment() {
                 adapter.notifyItemChanged(position)
             }
             .setPositiveButton("Delete") { dialog, _ ->
-                workouts.removeAt(position)
+                viewModel.deleteWorkout(workout.toWorkoutEntity())
                 adapter.notifyItemRemoved(position)
                 dialog.dismiss()
             }

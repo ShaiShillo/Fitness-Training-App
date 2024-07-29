@@ -17,9 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.exerciseappapi.Exercise
-import com.example.exerciseappapi.ExerciseAdapter
-import com.example.exerciseappapi.ExerciseViewModel
 import com.example.exerciseappapi.databinding.BottomSheetFilterBinding
 import com.example.exerciseappapi.databinding.FragmentMainBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -61,12 +58,26 @@ class MainFragment : Fragment() {
         setupListeners()
         setupSwipeToDelete()
 
-        viewModel.exercises.observe(viewLifecycleOwner) { exercises ->
-            adapter.setExercises(exercises)
-            viewModel.filteredExercises.observe(viewLifecycleOwner) { exercises ->
-                adapter.setExercises(exercises)
+        // Initialize the adapter before setting it to the RecyclerView
+        adapter = ExerciseAdapter(
+            mutableListOf(),
+            onItemClick = { exercise ->
+                showExerciseDetails(exercise)
+            },
+            onEditClick = { exercise ->
+                editExercise(exercise)
+            },
+            isSelectingExercises = isSelectingExercises,
+            onExerciseSelected = { exercise, isChecked ->
+                if (isChecked) {
+                    selectedExercises.add(exercise)
+                } else {
+                    selectedExercises.remove(exercise)
+                }
             }
-        }
+        )
+
+        binding.recyclerView.adapter = adapter
 
         if (isSelectingExercises) {
             setupExerciseSelection()
@@ -87,66 +98,18 @@ class MainFragment : Fragment() {
             findNavController().previousBackStackEntry?.savedStateHandle?.set("selectedExercises", selectedExercises.toList())
             findNavController().navigateUp()
         }
-
-        adapter = ExerciseAdapter(
-            viewModel.exercises.value.orEmpty().toMutableList(),
-            onItemClick = {}, // No-op lambda for item click
-            onEditClick = {}, // No-op lambda for edit click
-            isSelectingExercises = true,
-            onExerciseSelected = { exercise, isChecked ->
-                if (isChecked) {
-                    selectedExercises.add(exercise)
-                } else {
-                    selectedExercises.remove(exercise)
-                }
-                // Log the selection status
-                Log.d("MainFragment", "Exercise: ${exercise.name}, Selected: $isChecked")
-            }
-        )
-
-        binding.recyclerView.adapter = adapter
     }
-
 
     private fun setupObservers() {
         viewModel.exercises.observe(viewLifecycleOwner, Observer { exercises ->
             binding.loadingProgressBar.visibility = View.GONE
             if (exercises.isEmpty()) {
                 binding.noExercisesTextView.visibility = View.VISIBLE
-                binding.addExerciseButton.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE
             } else {
                 binding.noExercisesTextView.visibility = View.GONE
-                binding.addExerciseButton.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
-
-                if (isSelectingExercises) {
-                    adapter = ExerciseAdapter(
-                        exercises.toMutableList(),
-                        onItemClick = {}, // No-op lambda for item click
-                        onEditClick = {}, // No-op lambda for edit click
-                        isSelectingExercises = true,
-                        onExerciseSelected = { exercise, isChecked ->
-                            if (isChecked) {
-                                selectedExercises.add(exercise)
-                            } else {
-                                selectedExercises.remove(exercise)
-                            }
-                        }
-                    )
-                } else {
-                    adapter = ExerciseAdapter(
-                        exercises.toMutableList(),
-                        onItemClick = { exercise ->
-                            showExerciseDetails(exercise)
-                        },
-                        onEditClick = { exercise ->
-                            editExercise(exercise)
-                        }
-                    )
-                }
-
-                binding.recyclerView.adapter = adapter
+                adapter.setExercises(exercises)
             }
         })
 
@@ -163,6 +126,13 @@ class MainFragment : Fragment() {
                 clearSearchAndFilters()
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("exerciseAdded")
+            ?.observe(viewLifecycleOwner) { exerciseAdded ->
+                if (exerciseAdded == true) {
+                    viewModel.loadExercises()
+                }
+            }
     }
 
     private fun clearSearchAndFilters() {

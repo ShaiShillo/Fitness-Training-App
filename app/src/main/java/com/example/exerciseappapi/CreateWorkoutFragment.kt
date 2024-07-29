@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,12 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.FragmentCreateWorkoutBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.util.Date
+import java.util.*
 
 class CreateWorkoutFragment : Fragment() {
 
     private var _binding: FragmentCreateWorkoutBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: ExerciseViewModel by viewModels()
     private val selectedExercises = mutableListOf<Exercise>()
     private lateinit var adapter: ExerciseAdapter
 
@@ -53,7 +55,7 @@ class CreateWorkoutFragment : Fragment() {
         adapter = ExerciseAdapter(
             selectedExercises,
             onItemClick = {}, // No-op lambda for item click
-            onEditClick = { exercise -> editExercise(exercise) },  // Make the edit button functional
+            onEditClick = { exercise -> editExercise(exercise) }, // Make the edit button functional
             isSelectingExercises = false // Ensure the checkboxes are hidden
         )
         binding.exercisesRecyclerView.adapter = adapter
@@ -118,17 +120,16 @@ class CreateWorkoutFragment : Fragment() {
             return
         }
 
-        val workout = Workout(
+        val workoutEntity = WorkoutEntity(
             workoutName = workoutName,
-            creationDate = Date(),
-            exercises = selectedExercises
+            creationDate = Date(), // Assuming the current date is used as creation date
+            exercises = selectedExercises.map { it }
         )
 
-        // Pass the new workout back to the WorkoutsFragment
-        val bundle = Bundle().apply {
-            putParcelable("newWorkout", workout)
-        }
-        findNavController().previousBackStackEntry?.savedStateHandle?.set("newWorkoutBundle", bundle)
+        viewModel.addWorkout(workoutEntity)
+
+        // Notify WorkoutsFragment of the new workout
+        findNavController().previousBackStackEntry?.savedStateHandle?.set("workoutAdded", true)
         findNavController().navigateUp()
     }
 

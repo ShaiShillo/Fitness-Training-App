@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 
 class ExerciseRepository(
     private val exerciseDao: ExerciseDao,
+    private val workoutDao: WorkoutDao,
     private val apiService: ExerciseApiService,
     private val converters: Converters
 ) {
@@ -86,6 +87,28 @@ class ExerciseRepository(
     suspend fun updateExercise(exercise: Exercise) {
         withContext(Dispatchers.IO) {
             exerciseDao.updateExercise(converters.exerciseToEntity(exercise))
+        }
+    }
+
+    fun getAllWorkouts(): Flow<List<WorkoutEntity>> {
+        return workoutDao.getWorkouts()
+    }
+
+    suspend fun addWorkout(workout: WorkoutEntity) {
+        withContext(Dispatchers.IO) {
+            workoutDao.insertWorkout(workout)
+        }
+    }
+
+    suspend fun deleteWorkout(workout: WorkoutEntity) {
+        withContext(Dispatchers.IO) {
+            workoutDao.deleteWorkout(workout)
+        }
+    }
+
+    suspend fun updateWorkout(workout: WorkoutEntity) {
+        withContext(Dispatchers.IO) {
+            workoutDao.updateWorkout(workout)
         }
     }
 }

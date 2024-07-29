@@ -3,6 +3,7 @@ package com.example.exerciseappapi
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.Date
 
 class Converters {
 
@@ -46,13 +47,38 @@ class Converters {
         return Gson().toJson(list)
     }
 
-
-    fun exerciseListToEntityList(exercises: List<Exercise>): List<ExerciseEntity> {
-        return exercises.map { exerciseToEntity(it) }
+    @TypeConverter
+    fun fromExerciseList(value: String?): List<Exercise>? {
+        if (value == null) return null
+        val listType = object : TypeToken<List<Exercise>>() {}.type
+        return Gson().fromJson(value, listType)
     }
 
-    fun entityListToExerciseList(entities: List<ExerciseEntity>): List<Exercise> {
-        return entities.map { entityToExercise(it) }
+    @TypeConverter
+    fun fromExerciseListToString(list: List<Exercise>?): String? {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Date? {
+        return value?.let { Date(it) }
+    }
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date?): Long? {
+        return date?.time
+    }
+
+    @TypeConverter
+    fun fromExerciseEntityList(value: List<ExerciseEntity>?): String? {
+        val type = object : TypeToken<List<ExerciseEntity>>() {}.type
+        return Gson().toJson(value, type)
+    }
+
+    @TypeConverter
+    fun toExerciseEntityList(value: String?): List<ExerciseEntity>? {
+        val type = object : TypeToken<List<ExerciseEntity>>() {}.type
+        return Gson().fromJson(value, type)
     }
 
     fun ExerciseEntity.toExercise(): Exercise {
@@ -67,5 +93,4 @@ class Converters {
             instructions = this.instructions
         )
     }
-
 }

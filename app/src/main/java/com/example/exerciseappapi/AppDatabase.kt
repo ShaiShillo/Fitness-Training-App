@@ -6,11 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [ExerciseEntity::class], version = 5, exportSchema = false)
+@Database(entities = [ExerciseEntity::class, WorkoutEntity::class], version = 6, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun exerciseDao(): ExerciseDao
+    abstract fun workoutDao(): WorkoutDao
 
     companion object {
         @Volatile
@@ -23,7 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "exercise_database"
                 )
-                    .fallbackToDestructiveMigration() // This will allow destructive migrations
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

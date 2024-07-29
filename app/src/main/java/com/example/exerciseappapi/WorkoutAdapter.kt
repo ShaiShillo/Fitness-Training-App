@@ -24,6 +24,12 @@ class WorkoutAdapter(
 
     fun getWorkoutAt(position: Int): Workout = workouts[position]
 
+    fun setWorkouts(newWorkouts: List<Workout>) {
+        workouts.clear()
+        workouts.addAll(newWorkouts)
+        notifyDataSetChanged()
+    }
+
     inner class WorkoutViewHolder(private val binding: ItemWorkoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(workout: Workout, position: Int) {
             binding.workout = workout

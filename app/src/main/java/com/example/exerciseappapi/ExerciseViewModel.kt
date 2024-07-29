@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import com.example.exerciseappapi.ExerciseEntity
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -37,15 +36,49 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
 
+    private val _workouts = MutableLiveData<List<WorkoutEntity>>()
+    val workouts: LiveData<List<WorkoutEntity>> get() = _workouts
+
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
+        val workoutDao = AppDatabase.getDatabase(application).workoutDao()
         val apiService = ApiClient.apiService
         val converters = Converters()
-        exerciseRepository = ExerciseRepository(exerciseDao, apiService, converters)
+        exerciseRepository = ExerciseRepository(exerciseDao, workoutDao, apiService, converters)
         fetchBodyParts()
         fetchExercises()
         fetchAllEquipment()
         _isEditMode.value = false
+        fetchWorkouts()
+    }
+
+    fun fetchWorkouts() {
+        viewModelScope.launch {
+            exerciseRepository.getAllWorkouts().collect { workoutList ->
+                _workouts.postValue(workoutList)
+            }
+        }
+    }
+
+    fun addWorkout(workout: WorkoutEntity) {
+        viewModelScope.launch {
+            exerciseRepository.addWorkout(workout)
+            fetchWorkouts() // Reload workouts after adding a new one
+        }
+    }
+
+    fun deleteWorkout(workout: WorkoutEntity) {
+        viewModelScope.launch {
+            exerciseRepository.deleteWorkout(workout)
+            fetchWorkouts() // Reload workouts after deleting one
+        }
+    }
+
+    fun updateWorkout(workout: WorkoutEntity) {
+        viewModelScope.launch {
+            exerciseRepository.updateWorkout(workout)
+            fetchWorkouts() // Reload workouts after updating one
+        }
     }
 
     fun setExercises(exerciseList: List<Exercise>) {
@@ -128,6 +161,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun addExercise(exercise: Exercise) {
         viewModelScope.launch {
             exerciseRepository.addExercise(exercise)
+            loadExercises() // Reload exercises after adding a new one
         }
     }
 

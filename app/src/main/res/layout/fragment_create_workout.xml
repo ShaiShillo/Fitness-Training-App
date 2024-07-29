@@ -14,19 +14,20 @@
 
         <TextView
             android:id="@+id/workoutTitleTextView"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+
             android:text="Create Workout"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/workoutNameEditText"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Workout Name"
             app:layout_constraintTop_toBottomOf="@id/workoutTitleTextView"
@@ -51,20 +52,22 @@
             android:id="@+id/fabAddExercise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="88dp"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/saveWorkoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save Workout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/fabAddExercise"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp" />
+            android:src="@drawable/ic_baseline_check"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fabAddExercise"
+            app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
