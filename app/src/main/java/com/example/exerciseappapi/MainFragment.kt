@@ -44,7 +44,6 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-
         isSelectingExercises = arguments?.getBoolean("isSelectingExercises") ?: false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())

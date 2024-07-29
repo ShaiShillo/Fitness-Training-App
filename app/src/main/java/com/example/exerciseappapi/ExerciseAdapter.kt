@@ -1,9 +1,11 @@
 package com.example.exerciseappapi
 
 import android.graphics.drawable.Drawable
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -20,6 +22,7 @@ class ExerciseAdapter(
     private val showEditButton: Boolean = true,
     private val onExerciseSelected: (Exercise, Boolean) -> Unit = { _, _ -> }
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
+    private val selectedItems = SparseBooleanArray()
 
     fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
@@ -34,7 +37,7 @@ class ExerciseAdapter(
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = exercises[position]
-        holder.bind(exercise)
+        holder.bind(exercise, selectedItems[position, false])
         if (!isSelectingExercises) {
             holder.itemView.setOnClickListener { onItemClick(exercise) }
             holder.binding.editButton.setOnClickListener { onEditClick(exercise) }
@@ -51,11 +54,15 @@ class ExerciseAdapter(
     }
 
     inner class ExerciseViewHolder(val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(exercise: Exercise) {
+
+        fun bind(exercise: Exercise, isSelected: Boolean) {
             if (isSelectingExercises) {
                 binding.checkbox.visibility = View.VISIBLE
                 binding.editButton.visibility = View.GONE
+                binding.checkbox.setOnCheckedChangeListener(null) // Remove previous listener
+                binding.checkbox.isChecked = isSelected
                 binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                    selectedItems[adapterPosition] = isChecked
                     onExerciseSelected(exercise, isChecked)
                 }
             } else {
