@@ -12,5 +12,4 @@
         android:id="@+id/workoutsFragment"
         android:icon="@drawable/ic_workout"
         android:title="@string/workouts" />
-
 </menu>

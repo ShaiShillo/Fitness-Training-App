@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.ItemWorkoutBinding
 
 class WorkoutAdapter(
-    private val workouts: MutableList<Workout>,
-    private val onItemClick: (Workout) -> Unit,
-    private val onEditClick: (Workout) -> Unit,
-    private val onDeleteClick: (Workout, Int) -> Unit
+    private val workouts: MutableList<WorkoutEntity>,
+    private val onItemClick: (WorkoutEntity) -> Unit,
+    private val onEditClick: (WorkoutEntity) -> Unit,
+    private val onDeleteClick: (WorkoutEntity, Int) -> Unit
 ) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
@@ -23,17 +23,17 @@ class WorkoutAdapter(
 
     override fun getItemCount() = workouts.size
 
-    fun getWorkoutAt(position: Int): Workout = workouts[position]
+    fun getWorkoutAt(position: Int): WorkoutEntity = workouts[position]
 
-    fun setWorkouts(newWorkouts: List<Workout>) {
+    fun setWorkouts(newWorkouts: List<WorkoutEntity>) {
         workouts.clear()
         workouts.addAll(newWorkouts)
         notifyDataSetChanged()
     }
 
     inner class WorkoutViewHolder(private val binding: ItemWorkoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(workout: Workout, position: Int) {
-            binding.workout = workout
+        fun bind(workout: WorkoutEntity, position: Int) {
+            binding.workout = workout.toWorkout()
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {

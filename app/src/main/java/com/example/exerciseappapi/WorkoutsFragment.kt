@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -59,15 +60,15 @@ class WorkoutsFragment : Fragment() {
         binding.workoutsRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = WorkoutAdapter(
             mutableListOf(),
-            onItemClick = { workout ->
-                val action = WorkoutsFragmentDirections.actionWorkoutsFragmentToWorkoutDetailFragment(workout)
+            onItemClick = { workoutEntity ->
+                val action = WorkoutsFragmentDirections.actionWorkoutsFragmentToWorkoutDetailFragment(workoutEntity.toWorkout())
                 findNavController().navigate(action)
             },
-            onEditClick = { workout ->
-                editWorkout(workout)
+            onEditClick = { workoutEntity ->
+                editWorkout(workoutEntity.toWorkout())
             },
-            onDeleteClick = { workout, position ->
-                showDeleteConfirmationDialog(workout, position)
+            onDeleteClick = { workoutEntity, position ->
+                showDeleteConfirmationDialog(workoutEntity, position)
             }
         )
         binding.workoutsRecyclerView.adapter = adapter
@@ -81,8 +82,8 @@ class WorkoutsFragment : Fragment() {
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.workouts.collect { workouts ->
-                adapter.setWorkouts(workouts.map { it.toWorkout() })
+            viewModel.workouts.asFlow().collect { workouts ->
+                adapter.setWorkouts(workouts)
             }
         }
     }
@@ -102,20 +103,20 @@ class WorkoutsFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val workout = adapter.getWorkoutAt(position)
-                showDeleteConfirmationDialog(workout, position)
+                val workoutEntity = adapter.getWorkoutAt(position)
+                showDeleteConfirmationDialog(workoutEntity, position)
             }
         })
         itemTouchHelper.attachToRecyclerView(binding.workoutsRecyclerView)
     }
 
-    private fun showDeleteConfirmationDialog(workout: Workout, position: Int) {
+    private fun showDeleteConfirmationDialog(workoutEntity: WorkoutEntity, position: Int) {
         DialogUtils.showDeleteConfirmationDialog(
             context = requireContext(),
             title = "Delete Workout",
             message = "Are you sure you want to delete this workout?",
             onConfirm = {
-                viewModel.deleteWorkout(workout.toWorkoutEntity())
+                viewModel.deleteWorkout(workoutEntity)
                 adapter.notifyItemRemoved(position)
             },
             onCancel = {

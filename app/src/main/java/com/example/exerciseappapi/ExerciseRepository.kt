@@ -111,4 +111,26 @@ class ExerciseRepository(
             workoutDao.updateWorkout(workout)
         }
     }
+
+    suspend fun addWorkoutToDate(workout: WorkoutEntity, date: String) {
+        val workoutDateEntity = WorkoutDateEntity(
+            workoutId = workout.id,
+            date = date
+        )
+        withContext(Dispatchers.IO) {
+            workoutDao.insertWorkoutDate(workoutDateEntity)
+        }
+    }
+
+    fun getWorkoutsForDate(date: String): Flow<List<WorkoutEntity>> {
+        return flow {
+            val workoutIds = withContext(Dispatchers.IO) {
+                workoutDao.getWorkoutIdsByDate(date)
+            }
+            val workouts = withContext(Dispatchers.IO) {
+                workoutDao.getWorkoutsByIds(workoutIds)
+            }
+            emit(workouts)
+        }
+    }
 }

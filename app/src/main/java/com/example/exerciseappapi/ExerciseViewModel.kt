@@ -2,15 +2,9 @@ package com.example.exerciseappapi
 
 import android.app.Application
 import android.util.Log
-import androidx.databinding.BindingAdapter
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.google.android.material.chip.Chip
+import androidx.lifecycle.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -44,17 +38,17 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val exercises: LiveData<List<Exercise>> get() = _exercises
 
     private val _workouts = MutableStateFlow<List<WorkoutEntity>>(emptyList())
-    val workouts: StateFlow<List<WorkoutEntity>> = _workouts
+    val workouts: LiveData<List<WorkoutEntity>> = _workouts.asLiveData()
 
     // New LiveData for HomeFragment
     private val _selectedDate = MutableLiveData<String>()
     val selectedDate: LiveData<String> get() = _selectedDate
 
-    private val _workoutsForSelectedDate = MutableLiveData<List<Workout>>()
-    val workoutsForSelectedDate: LiveData<List<Workout>> get() = _workoutsForSelectedDate
+    private val _workoutsForSelectedDate = MutableLiveData<List<WorkoutEntity>>()
+    val workoutsForSelectedDate: LiveData<List<WorkoutEntity>> get() = _workoutsForSelectedDate
 
-    private val _userCreatedWorkouts = MutableLiveData<List<Workout>>()
-    val userCreatedWorkouts: LiveData<List<Workout>> get() = _userCreatedWorkouts
+    private val _userCreatedWorkouts = MutableLiveData<List<WorkoutEntity>>()
+    val userCreatedWorkouts: LiveData<List<WorkoutEntity>> get() = _userCreatedWorkouts
 
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
@@ -99,6 +93,34 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun setExercises(exerciseList: List<Exercise>) {
         _exercises.value = exerciseList
+    }
+
+    fun setSelectedDate(date: String) {
+        _selectedDate.value = date
+    }
+
+    fun setWorkoutsForSelectedDate(workouts: List<WorkoutEntity>) {
+        _workoutsForSelectedDate.value = workouts
+    }
+
+    fun getWorkoutsForDate(date: String): LiveData<List<WorkoutEntity>> {
+        val workoutsForDate = MutableLiveData<List<WorkoutEntity>>()
+        viewModelScope.launch {
+            exerciseRepository.getWorkoutsForDate(date).collect { workouts ->
+                workoutsForDate.postValue(workouts)
+            }
+        }
+        return workoutsForDate
+    }
+
+    fun addWorkoutToDate(workout: WorkoutEntity, date: String) {
+        viewModelScope.launch {
+            exerciseRepository.addWorkoutToDate(workout, date)
+            fetchWorkouts()
+        }
+    }
+    fun getAllWorkoutsLiveData(): LiveData<List<WorkoutEntity>> {
+        return exerciseRepository.getAllWorkouts().asLiveData()
     }
 
     fun loadExercises() {
