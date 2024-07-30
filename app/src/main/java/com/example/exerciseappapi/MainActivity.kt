@@ -1,6 +1,7 @@
 package com.example.exerciseappapi
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,5 +21,18 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (navController.currentDestination?.id == R.id.mainFragment) {
+                    finish()  // Exit the app if back is pressed on the main fragment
+                } else {
+                    // Navigate back or handle other back press behavior
+                    if (!navController.popBackStack()) {
+                        finish()  // Exit the app if no more fragments in the back stack
+                    }
+                }
+            }
+        })
     }
 }

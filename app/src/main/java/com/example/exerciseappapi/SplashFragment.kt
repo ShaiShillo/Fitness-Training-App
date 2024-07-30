@@ -40,7 +40,7 @@ class SplashFragment : Fragment() {
                 override fun handleOnBackPressed() {
                     // Allow the back press to navigate back and exit the app
                     isEnabled = false
-                    requireActivity().onBackPressed()
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
         )
@@ -49,7 +49,9 @@ class SplashFragment : Fragment() {
 
         // Navigate to MainFragment after splash screen duration
         Handler(Looper.getMainLooper()).postDelayed({
-            findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
+            }
         }, splashScreenDuration)
     }
 
