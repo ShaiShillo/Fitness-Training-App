@@ -7,4 +7,6 @@
     <color name="dark_red">#b50000</color>
     <color name="dark_blue">#0a213d</color>
     <color name="light_blue">#85ABC8</color>
+    <color name="splash_color">#162753</color>
+
 </resources>

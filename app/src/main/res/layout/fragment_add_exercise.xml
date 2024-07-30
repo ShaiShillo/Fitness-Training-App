@@ -134,7 +134,10 @@
                 android:inputType="text"
                 android:visibility="gone" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                android:backgroundTint="@color/dark_blue"
+                android:textColor="@color/white"
+                style="?attr/materialButtonOutlinedStyle"
                 android:id="@+id/saveExerciseButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

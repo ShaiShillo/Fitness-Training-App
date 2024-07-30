@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExerciseAppAPI</string>
+    <string name="app_name">BuffBuddy</string>
     <string name="body_part_prompt">Select Body Part</string>
     <string name="target_prompt">Select Target Muscle</string>
     <string name="equipment_prompt">Select Equipment</string>
@@ -19,5 +19,6 @@
     <string name="exercises">Exercises</string>
     <string name="workouts">Workouts</string>
     <string name="settings">Settings</string>
+    <string name="choose_workout">Choose A Workout</string>
 
 </resources>

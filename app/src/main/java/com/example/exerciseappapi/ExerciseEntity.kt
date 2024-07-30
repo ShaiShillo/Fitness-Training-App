@@ -16,7 +16,7 @@ data class ExerciseEntity(
     val secondaryMuscles: List<String>,
     @TypeConverters(Converters::class)
     val instructions: List<String>,
-    val createdByUser: Boolean  // Add this field
+    val createdByUser: Boolean
 ) {
     companion object {
         fun fromExercise(exercise: Exercise): ExerciseEntity {

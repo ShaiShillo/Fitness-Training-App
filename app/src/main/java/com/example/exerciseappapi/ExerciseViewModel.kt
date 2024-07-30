@@ -1,14 +1,19 @@
 package com.example.exerciseappapi
 
 import android.app.Application
+import android.util.Log
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -41,6 +46,16 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val _workouts = MutableStateFlow<List<WorkoutEntity>>(emptyList())
     val workouts: StateFlow<List<WorkoutEntity>> = _workouts
 
+    // New LiveData for HomeFragment
+    private val _selectedDate = MutableLiveData<String>()
+    val selectedDate: LiveData<String> get() = _selectedDate
+
+    private val _workoutsForSelectedDate = MutableLiveData<List<Workout>>()
+    val workoutsForSelectedDate: LiveData<List<Workout>> get() = _workoutsForSelectedDate
+
+    private val _userCreatedWorkouts = MutableLiveData<List<Workout>>()
+    val userCreatedWorkouts: LiveData<List<Workout>> get() = _userCreatedWorkouts
+
     init {
         val exerciseDao = AppDatabase.getDatabase(application).exerciseDao()
         val workoutDao = AppDatabase.getDatabase(application).workoutDao()
@@ -51,6 +66,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         fetchExercises()
         fetchAllEquipment()
         _isEditMode.value = false
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") // Adjust the pattern as needed
+        val formattedDate = currentDate.format(formatter)
     }
 
     fun fetchWorkouts() {
@@ -174,5 +192,15 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             exerciseRepository.updateExercise(exercise)
         }
+    }
+
+    fun setChipText(secondaryMuscles: List<String>): String {
+        val chipText = if (secondaryMuscles.isNotEmpty()) {
+            secondaryMuscles.joinToString(", ")
+        } else {
+            "No secondary muscles"
+        }
+        Log.d("ExerciseViewModel", "Chip Text: $chipText")
+        return chipText
     }
 }

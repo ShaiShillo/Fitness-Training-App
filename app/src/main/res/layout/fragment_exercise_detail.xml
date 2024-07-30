@@ -1,223 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="exercise"
             type="com.example.exerciseappapi.Exercise" />
+
+        <variable
+            name="exerciseViewModel"
+            type="com.example.exerciseappapi.ExerciseViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="#f5f5f5">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/exerciseName"
-            android:layout_width="wrap_content"
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginBottom="24dp"
-            android:text="@{exercise.name}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:background="@android:color/transparent"
+            android:fitsSystemWindows="true">
 
-        <View
-            android:id="@+id/topSeparator"
-            android:layout_width="0dp"
-            android:layout_height="4dp"
-            android:background="@drawable/bg_separator"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintTop_toBottomOf="@id/exerciseName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:contentScrim="@android:color/transparent"
+                app:statusBarScrim="@android:color/transparent"
+                app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/imageContainer"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:background="@drawable/bg_card_white"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@id/topSeparator"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/exerciseImage"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:scaleType="fitCenter"
-                app:imageUrl="@{exercise.gifUrl}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/exerciseImage"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="16dp"
+                        android:scaleType="centerCrop"
+                        app:imageUrl="@{exercise.gifUrl}"
+                        app:layout_collapseMode="parallax"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircularImageView"
+                        app:strokeColor="@color/dark_blue"
+                        app:strokeWidth="2dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:src="@tools:sample/avatars" />
 
-        <View
-            android:id="@+id/bottomSeparator"
-            android:layout_width="0dp"
-            android:layout_height="4dp"
-            android:background="@drawable/bg_separator"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@id/imageContainer"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:titleTextColor="@android:color/white"
+                    app:navigationIconTint="@android:color/white" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/bottomSeparator"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/exerciseInstructionsContainer">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <GridLayout
-                android:id="@+id/columnsContainer"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="2">
+                android:paddingBottom="16dp">
 
-                <LinearLayout
-                    android:id="@+id/leftColumn"
-                    android:layout_width="0dp"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/overviewCard"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical">
+                    android:layout_margin="16dp"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="@drawable/bg_round"
-                        android:padding="8dp"
-                        android:layout_marginBottom="16dp">
+                        android:padding="16dp">
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Overview"
+                            android:textAppearance="?attr/textAppearanceHeadline6"
+                            android:layout_marginBottom="8dp" />
+
+                        <com.google.android.material.chip.ChipGroup
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Category:"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="4dp" />
+                            app:singleLine="false">
+
+                            <com.google.android.material.chip.Chip
+                                style="@style/Widget.MaterialComponents.Chip.Action"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{`Category: ` + exercise.bodyPart}"
+                                android:ellipsize="end"
+                                android:maxLines="1" />
+
+                            <com.google.android.material.chip.Chip
+                                style="@style/Widget.MaterialComponents.Chip.Action"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{`Equipment: ` + exercise.equipment}"
+                                android:ellipsize="end"
+                                android:maxLines="1" />
+
+                            <com.google.android.material.chip.Chip
+                                style="@style/Widget.MaterialComponents.Chip.Action"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{`Target: ` + exercise.target}"
+                                android:ellipsize="end"
+                                android:maxLines="1" />
+
+                        </com.google.android.material.chip.ChipGroup>
 
                         <TextView
-                            android:id="@+id/exerciseCategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@{exercise.bodyPart}" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_round"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Equipment:"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:id="@+id/exerciseEquipment"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@{exercise.equipment}" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/rightColumn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_round"
-                        android:padding="8dp"
-                        android:layout_marginBottom="16dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Target/Primary Muscles:"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:id="@+id/exerciseTargetPrimaryMuscles"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@{exercise.target}" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_round"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Secondary Muscles:"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="4dp" />
+                            android:textAppearance="?attr/textAppearanceSubtitle1"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="8dp" />
 
-                        <TextView
-                            android:id="@+id/exerciseSecondaryMuscles"
+                        <com.google.android.material.chip.ChipGroup
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:secondaryMusclesText="@{exercise.secondaryMuscles}" />
+                            app:singleLine="false">
+
+                            <com.google.android.material.chip.Chip
+                                style="@style/Widget.MaterialComponents.Chip.Action"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:chipText="@{exerciseViewModel.setChipText(exercise.secondaryMuscles)}"
+                                tools:text="Secondary Muscles" />
+
+                        </com.google.android.material.chip.ChipGroup>
+
                     </LinearLayout>
-                </LinearLayout>
-            </GridLayout>
-        </androidx.core.widget.NestedScrollView>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/exerciseInstructionsContainer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/bg_round"
-            android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@id/nestedScrollView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+                </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/instructionsCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Instructions:"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_margin="16dp"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/overviewCard"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
-                    android:id="@+id/exerciseInstructions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:instructionsText="@{exercise.instructions}" />
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Instructions"
+                            android:textAppearance="?attr/textAppearanceHeadline6"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/exerciseInstructions"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:instructionsText="@{exercise.instructions}"
+                            android:textAppearance="?attr/textAppearanceBody1" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.core.widget.NestedScrollView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

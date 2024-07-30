@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
 
-    <data>
-        <!-- Add ViewModel and any necessary data binding variables here -->
-    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -56,6 +53,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="88dp"
             android:src="@drawable/ic_add"
+            android:backgroundTint="@color/light_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -65,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/light_blue"
             android:src="@drawable/ic_baseline_check"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
