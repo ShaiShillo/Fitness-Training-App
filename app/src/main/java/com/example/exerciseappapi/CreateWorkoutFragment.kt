@@ -24,6 +24,7 @@ class CreateWorkoutFragment : Fragment() {
     private val viewModel: ExerciseViewModel by viewModels()
     private val selectedExercises = mutableListOf<Exercise>()
     private lateinit var adapter: ExerciseAdapter
+    private var workoutToEdit: Workout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +38,12 @@ class CreateWorkoutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupObserver()
+
+        workoutToEdit = arguments?.let { CreateWorkoutFragmentArgs.fromBundle(it).workout }
+
+        if (workoutToEdit != null) {
+            populateWorkoutDetails(workoutToEdit!!)
+        }
 
         binding.fabAddExercise.setOnClickListener {
             val bundle = Bundle().apply {
@@ -110,6 +117,13 @@ class CreateWorkoutFragment : Fragment() {
             })
     }
 
+    private fun populateWorkoutDetails(workout: Workout) {
+        binding.workoutNameEditText.setText(workout.workoutName)
+        selectedExercises.clear()
+        selectedExercises.addAll(workout.exercises)
+        adapter.notifyDataSetChanged()
+    }
+
     private fun saveWorkout() {
         val workoutName = binding.workoutNameEditText.text.toString()
         if (workoutName.isBlank()) {
@@ -122,14 +136,19 @@ class CreateWorkoutFragment : Fragment() {
         }
 
         val workoutEntity = WorkoutEntity(
+            id = workoutToEdit?.id ?: 0, // Use the existing ID if editing
             workoutName = workoutName,
-            creationDate = Date(), // Assuming the current date is used as creation date
+            creationDate = workoutToEdit?.creationDate ?: Date(), // Use existing creation date if editing
             exercises = selectedExercises.map { it }
         )
 
-        viewModel.addWorkout(workoutEntity)
+        if (workoutToEdit == null) {
+            viewModel.addWorkout(workoutEntity)
+        } else {
+            viewModel.updateWorkout(workoutEntity)
+        }
 
-        // Notify WorkoutsFragment of the new workout
+        // Notify WorkoutsFragment of the updated workout
         findNavController().previousBackStackEntry?.savedStateHandle?.set("workoutAdded", true)
         findNavController().navigateUp()
     }

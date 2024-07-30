@@ -87,9 +87,8 @@ class WorkoutsFragment : Fragment() {
     }
 
     private fun editWorkout(workout: Workout) {
-        // Implement edit workout functionality here
-        // Navigate to a fragment to edit the workout
-        // You can add appropriate arguments to the navigation action
+        val action = WorkoutsFragmentDirections.actionWorkoutsFragmentToCreateWorkoutFragment(workout)
+        findNavController().navigate(action)
     }
 
     private fun setupSwipeToDelete() {
