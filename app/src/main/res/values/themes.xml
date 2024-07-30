@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ExerciseAppAPI" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="checkboxStyle">@style/MyCheckBox</item>
         <item name="android:windowBackground">@drawable/background_image</item>
         <item name="android:statusBarColor">@color/dark_blue</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
@@ -43,4 +44,14 @@
         <item name="android:background">@drawable/selector_button_background</item>
     </style>
 
+    <!-- Custom Checkbox Style -->
+    <style name="MyCheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.CheckBox</item>
+    </style>
+
+    <!-- Custom Theme Overlay for Checkbox -->
+    <style name="ThemeOverlay.CheckBox" parent="">
+        <item name="colorSecondary">@color/dark_blue</item>   <!-- checked -->
+        <item name="colorOnSurface">@color/light_blue</item>  <!-- unchecked -->
+    </style>
 </resources>
