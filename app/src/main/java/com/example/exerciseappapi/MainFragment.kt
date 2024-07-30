@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.BottomSheetFilterBinding
 import com.example.exerciseappapi.databinding.FragmentMainBinding
+import com.example.exerciseappapi.utils.DialogUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -341,18 +342,18 @@ class MainFragment : Fragment() {
     }
 
     private fun showDeleteConfirmationDialog(exercise: Exercise, position: Int) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Exercise")
-            .setMessage("Are you sure you want to delete this exercise?")
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
+        DialogUtils.showDeleteConfirmationDialog(
+            context = requireContext(),
+            title = "Delete Exercise",
+            message = "Are you sure you want to delete this exercise?",
+            onConfirm = {
+                selectedExercises.removeAt(position)
+                adapter.notifyItemRemoved(position)
+                viewModel.deleteExercise(exercise)
+            },
+            onCancel = {
                 adapter.notifyItemChanged(position)
             }
-            .setPositiveButton("Delete") { dialog, _ ->
-                viewModel.deleteExercise(exercise)
-                adapter.removeExerciseAt(position)
-                dialog.dismiss()
-            }
-            .show()
+        )
     }
 }

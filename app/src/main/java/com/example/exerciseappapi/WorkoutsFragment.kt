@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.FragmentWorkoutsBinding
+import com.example.exerciseappapi.utils.DialogUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -109,19 +110,18 @@ class WorkoutsFragment : Fragment() {
     }
 
     private fun showDeleteConfirmationDialog(workout: Workout, position: Int) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Workout")
-            .setMessage("Are you sure you want to delete this workout?")
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-                adapter.notifyItemChanged(position)
-            }
-            .setPositiveButton("Delete") { dialog, _ ->
+        DialogUtils.showDeleteConfirmationDialog(
+            context = requireContext(),
+            title = "Delete Workout",
+            message = "Are you sure you want to delete this workout?",
+            onConfirm = {
                 viewModel.deleteWorkout(workout.toWorkoutEntity())
                 adapter.notifyItemRemoved(position)
-                dialog.dismiss()
+            },
+            onCancel = {
+                adapter.notifyItemChanged(position)
             }
-            .show()
+        )
     }
 
     override fun onDestroyView() {

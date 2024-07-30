@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.FragmentCreateWorkoutBinding
+import com.example.exerciseappapi.utils.DialogUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
@@ -97,19 +98,19 @@ class CreateWorkoutFragment : Fragment() {
     }
 
     private fun showDeleteConfirmationDialog(exercise: Exercise, position: Int) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Exercise")
-            .setMessage("Are you sure you want to delete this exercise?")
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-                adapter.notifyItemChanged(position)
-            }
-            .setPositiveButton("Delete") { dialog, _ ->
+        DialogUtils.showDeleteConfirmationDialog(
+            context = requireContext(),
+            title = "Delete Exercise",
+            message = "Are you sure you want to delete this exercise?",
+            onConfirm = {
                 selectedExercises.removeAt(position)
                 adapter.notifyItemRemoved(position)
-                dialog.dismiss()
+                viewModel.deleteExercise(exercise)
+            },
+            onCancel = {
+                adapter.notifyItemChanged(position)
             }
-            .show()
+        )
     }
 
     private fun setupObserver() {
