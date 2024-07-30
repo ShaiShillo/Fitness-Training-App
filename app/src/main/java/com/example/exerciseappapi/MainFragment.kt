@@ -57,6 +57,7 @@ class MainFragment : Fragment() {
         setupSearch()
         setupFilterIcon()
         setupAddExerciseIcon()
+        setupNoExercisesCreateNewButton()
         setupListeners()
         setupSwipeToDelete()
 
@@ -108,10 +109,12 @@ class MainFragment : Fragment() {
             Log.d("MainFragment", "Filtered exercises: ${exercises.size}")
             if (exercises.isEmpty()) {
                 binding.noExercisesTextView.visibility = View.VISIBLE
+                binding.noExercisesCreateNewButton.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE
             } else {
                 binding.noExercisesTextView.visibility = View.GONE
-                binding.recyclerView.visibility = View.VISIBLE
+                binding.noExercisesCreateNewButton.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
                 adapter.setExercises(exercises)
             }
         })
@@ -171,7 +174,12 @@ class MainFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
-
+    private fun setupNoExercisesCreateNewButton() {
+        binding.noExercisesCreateNewButton.setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToAddExerciseFragment(null)
+            findNavController().navigate(action)
+        }
+    }
     private fun showFilterBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val bottomSheetBinding = BottomSheetFilterBinding.inflate(layoutInflater)

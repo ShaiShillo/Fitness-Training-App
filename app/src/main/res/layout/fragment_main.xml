@@ -85,6 +85,15 @@
                 android:visibility="gone" />
 
             <Button
+                android:id="@+id/noExercisesCreateNewButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="Create A New Exercise"
+                android:visibility="gone" />
+
+            <Button
                 android:id="@+id/confirmSelectionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
