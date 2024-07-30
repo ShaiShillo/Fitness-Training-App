@@ -1,6 +1,7 @@
 package com.example.exerciseappapi
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.ItemWorkoutBinding
@@ -9,7 +10,8 @@ class WorkoutAdapter(
     private val workouts: MutableList<WorkoutEntity>,
     private val onItemClick: (WorkoutEntity) -> Unit,
     private val onEditClick: (WorkoutEntity) -> Unit,
-    private val onDeleteClick: (WorkoutEntity, Int) -> Unit
+    private val onDeleteClick: (WorkoutEntity, Int) -> Unit,
+    private val hideButtons: Boolean = false
 ) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
@@ -35,6 +37,11 @@ class WorkoutAdapter(
         fun bind(workout: WorkoutEntity, position: Int) {
             binding.workout = workout.toWorkout()
             binding.executePendingBindings()
+
+            if (hideButtons) {
+                binding.editButton.visibility = View.GONE
+                binding.deleteButton.visibility = View.GONE
+            }
 
             binding.root.setOnClickListener {
                 onItemClick(workout)

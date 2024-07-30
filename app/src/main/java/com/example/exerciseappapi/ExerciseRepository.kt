@@ -121,6 +121,11 @@ class ExerciseRepository(
             workoutDao.insertWorkoutDate(workoutDateEntity)
         }
     }
+    suspend fun removeWorkoutFromDate(workout: WorkoutEntity, date: String) {
+        withContext(Dispatchers.IO) {
+            workoutDao.deleteWorkoutDate(workout.id, date)
+        }
+    }
 
     fun getWorkoutsForDate(date: String): Flow<List<WorkoutEntity>> {
         return flow {

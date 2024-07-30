@@ -103,6 +103,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         _workoutsForSelectedDate.value = workouts
     }
 
+    fun removeWorkoutFromDate(workout: WorkoutEntity, date: String) {
+        viewModelScope.launch {
+            exerciseRepository.removeWorkoutFromDate(workout, date)
+            getWorkoutsForDate(date)
+        }
+    }
+
+
     fun getWorkoutsForDate(date: String): LiveData<List<WorkoutEntity>> {
         val workoutsForDate = MutableLiveData<List<WorkoutEntity>>()
         viewModelScope.launch {

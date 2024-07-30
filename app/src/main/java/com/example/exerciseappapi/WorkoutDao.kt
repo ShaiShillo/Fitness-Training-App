@@ -30,4 +30,8 @@ interface WorkoutDao {
 
     @Query("SELECT * FROM workouts WHERE id IN (:workoutIds)")
     suspend fun getWorkoutsByIds(workoutIds: List<Int>): List<WorkoutEntity>
+
+    @Query("DELETE FROM workout_dates WHERE workoutId = :workoutId AND date = :date")
+    suspend fun deleteWorkoutDate(workoutId: Int, date: String)
+
 }

@@ -8,15 +8,15 @@ import android.widget.CalendarView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.exerciseappapi.R
-import com.example.exerciseappapi.databinding.FragmentHomeBinding
 import com.example.exerciseappapi.ExerciseViewModel
+import com.example.exerciseappapi.R
 import com.example.exerciseappapi.WorkoutAdapter
 import com.example.exerciseappapi.WorkoutEntity
+import com.example.exerciseappapi.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.lifecycle.asLiveData
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,6 +25,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var exerciseViewModel: ExerciseViewModel
     private lateinit var selectedDate: String
+    private lateinit var adapter: WorkoutAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,24 +56,41 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = WorkoutAdapter(mutableListOf(), { workout ->
+        adapter = WorkoutAdapter(mutableListOf(), { workout ->
             // Handle item click here
             showWorkoutDetails(workout)
         }, { workout ->
             // Handle edit click
         }, { workout, position ->
             // Handle delete click
-        })
+        }, hideButtons = true) // Hide buttons in HomeFragment
         binding.recyclerView.adapter = adapter
 
         exerciseViewModel.workoutsForSelectedDate.observe(viewLifecycleOwner) { workouts ->
             adapter.setWorkouts(workouts)
         }
+
+        // Add swipe-to-delete functionality
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val workout = adapter.getWorkoutAt(position)
+                exerciseViewModel.removeWorkoutFromDate(workout, selectedDate)
+                updateWorkoutsForSelectedDate()
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     private fun updateWorkoutsForSelectedDate() {
         exerciseViewModel.getWorkoutsForDate(selectedDate).observe(viewLifecycleOwner, { workouts ->
-            (binding.recyclerView.adapter as WorkoutAdapter).setWorkouts(workouts)
+            adapter.setWorkouts(workouts)
             binding.cardView.visibility = if (workouts.isEmpty()) View.GONE else View.VISIBLE
         })
     }
