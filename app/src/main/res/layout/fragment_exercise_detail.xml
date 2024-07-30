@@ -34,7 +34,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/exerciseImage"
@@ -81,6 +82,7 @@
                     android:id="@+id/overviewCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
                     android:layout_margin="16dp"
                     app:cardElevation="4dp"
                     app:cardCornerRadius="8dp"
@@ -110,6 +112,8 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/dark_blue"
+                                app:chipBackgroundColor="@color/light_blue"
                                 android:text="@{`Category: ` + exercise.bodyPart}"
                                 android:ellipsize="end"
                                 android:maxLines="1" />
@@ -118,6 +122,8 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/dark_blue"
+                                app:chipBackgroundColor="@color/light_blue"
                                 android:text="@{`Equipment: ` + exercise.equipment}"
                                 android:ellipsize="end"
                                 android:maxLines="1" />
@@ -126,6 +132,8 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/dark_blue"
+                                app:chipBackgroundColor="@color/light_blue"
                                 android:text="@{`Target: ` + exercise.target}"
                                 android:ellipsize="end"
                                 android:maxLines="1" />
@@ -150,6 +158,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:chipText="@{exerciseViewModel.setChipText(exercise.secondaryMuscles)}"
+                                android:textColor="@color/dark_blue"
+                                app:chipBackgroundColor="@color/light_blue"
                                 tools:text="Secondary Muscles" />
 
                         </com.google.android.material.chip.ChipGroup>
@@ -162,6 +172,7 @@
                     android:id="@+id/instructionsCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
                     android:layout_margin="16dp"
                     app:cardElevation="4dp"
                     app:cardCornerRadius="8dp"

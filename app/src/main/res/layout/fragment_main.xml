@@ -14,7 +14,9 @@
         android:id="@+id/FrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="12dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
 
         <LinearLayout
@@ -70,8 +72,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="0dp"
                 android:layout_weight="1" />
 
             <TextView
@@ -114,6 +116,7 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/light_blue"
             app:srcCompat="@drawable/ic_add_exercises_to_workout"
+            app:tint="@color/dark_blue"
             android:visibility="gone" />
     </FrameLayout>
 </layout>
