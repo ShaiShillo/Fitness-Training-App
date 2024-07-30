@@ -23,7 +23,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/workoutNameEditTextCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/white"
+            android:layout_margin="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/workoutTitleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <EditText
             android:id="@+id/workoutNameEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,15 +43,17 @@
             app:layout_constraintTop_toBottomOf="@id/workoutTitleTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="0dp"
             android:layout_marginStart="16dp"
+            android:layout_gravity="center|top"
             android:layout_marginEnd="16dp" />
+        </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/exercisesRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/workoutNameEditText"
+            app:layout_constraintTop_toBottomOf="@id/workoutNameEditTextCard"
             app:layout_constraintBottom_toTopOf="@id/fabAddExercise"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.FragmentCreateWorkoutBinding
 import com.example.exerciseappapi.utils.DialogUtils
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 class CreateWorkoutFragment : Fragment() {
@@ -68,8 +67,9 @@ class CreateWorkoutFragment : Fragment() {
             onItemClick = { exercise ->
                 showExerciseDetails(exercise)
             },
-            onEditClick = { exercise -> editExercise(exercise) }, // Make the edit button functional
-            isSelectingExercises = true // Ensure checkboxes are shown and clicking an item navigates to details
+            onEditClick = { exercise -> editExercise(exercise) },
+            isSelectingExercises = true,
+            showCheckboxes = false // Ensure checkboxes are hidden
         )
         binding.exercisesRecyclerView.adapter = adapter
         setupSwipeToDelete()

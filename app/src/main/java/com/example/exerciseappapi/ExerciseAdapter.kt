@@ -20,6 +20,7 @@ class ExerciseAdapter(
     private val onEditClick: (Exercise) -> Unit,
     private val isSelectingExercises: Boolean = false,
     private val showEditButton: Boolean = true,
+    private val showCheckboxes: Boolean = true,
     private val onExerciseSelected: (Exercise, Boolean) -> Unit = { _, _ -> }
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
     private val selectedItems = SparseBooleanArray()
@@ -54,7 +55,7 @@ class ExerciseAdapter(
     inner class ExerciseViewHolder(val binding: ItemExerciseBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(exercise: Exercise, isSelected: Boolean) {
-            if (isSelectingExercises) {
+            if (isSelectingExercises && showCheckboxes) {
                 binding.checkbox.visibility = View.VISIBLE
                 binding.editButton.visibility = View.GONE
                 binding.checkbox.setOnCheckedChangeListener(null) // Remove previous listener
