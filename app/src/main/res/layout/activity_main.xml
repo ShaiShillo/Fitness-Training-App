@@ -9,6 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
+        <!-- FragmentContainerView for navigation host -->
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -21,6 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/nav_graph" />
 
+        <!-- BottomNavigationView for bottom navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="0dp"
@@ -31,8 +35,9 @@
             app:menu="@menu/bottom_nav_menu"
             app:itemIconTint="@color/light_blue"
             app:itemTextColor="@color/light_blue"
-            app:backgroundTint="@color/dark_blue"/>
-
+            app:backgroundTint="@color/dark_blue"
+            app:itemRippleColor="@color/light_blue"
+            app:elevation="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

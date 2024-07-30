@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ExerciseAppAPI" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="android:windowBackground">@drawable/background_image</item>
+        <item name="android:statusBarColor">@color/dark_blue</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
@@ -11,6 +13,7 @@
     <style name="ShapeAppearanceOverlay.MaterialComponents.ShapeableImageView.RoundedCorner8" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+
     </style>
 
 </resources>
