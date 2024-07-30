@@ -39,7 +39,9 @@ class CreateWorkoutFragment : Fragment() {
         setupRecyclerView()
         setupObserver()
 
-        workoutToEdit = arguments?.let { CreateWorkoutFragmentArgs.fromBundle(it).workout }
+        arguments?.let {
+            workoutToEdit = CreateWorkoutFragmentArgs.fromBundle(it).workout
+        }
 
         if (workoutToEdit != null) {
             populateWorkoutDetails(workoutToEdit!!)
