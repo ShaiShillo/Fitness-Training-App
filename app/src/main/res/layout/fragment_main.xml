@@ -38,7 +38,7 @@
                     android:layout_toStartOf="@+id/addExerciseIcon"
                     android:background="@drawable/search_background"
                     android:drawableStart="@drawable/ic_search"
-                    android:drawablePadding="0dp"
+                    android:drawablePadding="4dp"
                     android:hint="Search exercises by name"
                     android:inputType="text"
                     android:padding="8dp"
