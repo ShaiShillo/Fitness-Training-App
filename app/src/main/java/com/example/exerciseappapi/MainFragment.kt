@@ -44,17 +44,22 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        isSelectingExercises = arguments?.getBoolean("isSelectingExercises") ?: false
+
         // Handle the back button
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    // Navigate back to exit the app
-                    requireActivity().finish()
+                    if (isSelectingExercises) {
+                        findNavController().navigateUp()
+                    } else {
+                        requireActivity().finish()
+                    }
                 }
             }
         )
-        isSelectingExercises = arguments?.getBoolean("isSelectingExercises") ?: false
 
         // Retrieve existing selected exercises
         val existingSelectedExercises = arguments?.getParcelableArrayList<Exercise>("selectedExercises")
@@ -124,7 +129,7 @@ class MainFragment : Fragment() {
             } else {
                 binding.noExercisesTextView.visibility = View.GONE
                 binding.noExercisesCreateNewButton.visibility = View.GONE
-                    binding.recyclerView.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.VISIBLE
                 adapter.setExercises(exercises)
             }
         })
@@ -184,12 +189,14 @@ class MainFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
+
     private fun setupNoExercisesCreateNewButton() {
         binding.noExercisesCreateNewButton.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToAddExerciseFragment(null)
             findNavController().navigate(action)
         }
     }
+
     private fun showFilterBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val bottomSheetBinding = BottomSheetFilterBinding.inflate(layoutInflater)

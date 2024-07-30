@@ -38,10 +38,8 @@ class ExerciseAdapter(
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = exercises[position]
         holder.bind(exercise, selectedItems[position, false])
-        if (!isSelectingExercises) {
-            holder.itemView.setOnClickListener { onItemClick(exercise) }
-            holder.binding.editButton.setOnClickListener { onEditClick(exercise) }
-        }
+        holder.itemView.setOnClickListener { onItemClick(exercise) }
+        holder.binding.editButton.setOnClickListener { onEditClick(exercise) }
     }
 
     override fun getItemCount(): Int = exercises.size

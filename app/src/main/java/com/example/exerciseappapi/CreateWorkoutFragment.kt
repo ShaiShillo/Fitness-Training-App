@@ -64,12 +64,19 @@ class CreateWorkoutFragment : Fragment() {
         binding.exercisesRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = ExerciseAdapter(
             selectedExercises,
-            onItemClick = {}, // No-op lambda for item click
+            onItemClick = { exercise ->
+                showExerciseDetails(exercise)
+            },
             onEditClick = { exercise -> editExercise(exercise) }, // Make the edit button functional
-            isSelectingExercises = false // Ensure the checkboxes are hidden
+            isSelectingExercises = true // Ensure checkboxes are shown and clicking an item navigates to details
         )
         binding.exercisesRecyclerView.adapter = adapter
         setupSwipeToDelete()
+    }
+
+    private fun showExerciseDetails(exercise: Exercise) {
+        val action = CreateWorkoutFragmentDirections.actionCreateWorkoutFragmentToExerciseDetailFragment(exercise)
+        findNavController().navigate(action)
     }
 
     private fun setupSwipeToDelete() {
