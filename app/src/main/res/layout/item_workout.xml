@@ -57,7 +57,17 @@
                     android:src="@drawable/ic_delete"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/delete_workout"
-                    android:layout_marginStart="16dp" />
+                    android:layout_marginStart="2dp" />
+
+                <ImageButton
+                    android:id="@+id/addAlarmButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/add_alarm"
+                    android:src="@drawable/ic_add_alarm"
+                    android:visibility="visible"
+                    android:layout_marginStart="2dp"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

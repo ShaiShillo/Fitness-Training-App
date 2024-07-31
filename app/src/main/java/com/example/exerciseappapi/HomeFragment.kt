@@ -109,7 +109,7 @@ class HomeFragment : Fragment() {
         }, { workout, position ->
             exerciseViewModel.removeWorkoutFromDate(workout, selectedDate)
             updateWorkoutsForSelectedDate()
-        }, showEditButton = false, showDeleteButton = false)
+        }, showEditButton = false, showDeleteButton = false, showAddAlarmButton = true)
         binding.recyclerView.adapter = adapter
 
         exerciseViewModel.workoutsForSelectedDate.observe(viewLifecycleOwner) { workouts ->

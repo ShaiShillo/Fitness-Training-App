@@ -22,5 +22,6 @@
     <string name="choose_workout">Choose A Workout</string>
     <string name="previous_week">Previous Week</string>
     <string name="next_week">Next Week</string>
+    <string name="add_alarm">Add Alarm</string>
 
 </resources>
