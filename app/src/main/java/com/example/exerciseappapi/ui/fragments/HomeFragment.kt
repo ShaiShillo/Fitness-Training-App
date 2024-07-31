@@ -27,6 +27,7 @@ import com.example.exerciseappapi.ui.adapters.WorkoutAdapter
 import com.example.exerciseappapi.models.WorkoutEntity
 import com.example.exerciseappapi.databinding.FragmentHomeBinding
 import com.example.exerciseappapi.models.toWorkout
+import com.example.exerciseappapi.utils.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -49,8 +50,9 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
 
-        // Initialize selectedDate to the current date
-        selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        // Initialize selectedDate to the saved date or the current date
+        selectedDate = PreferenceManager.getLastSelectedDate(requireContext())
+            ?: SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
         setupWeeklyCalendar()
         setupRecyclerView()
@@ -78,6 +80,7 @@ class HomeFragment : Fragment() {
         calendarAdapter = WeeklyCalendarAdapter(emptyList()) { date ->
             selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
             viewModel.setSelectedDate(selectedDate)
+            PreferenceManager.saveLastSelectedDate(requireContext(), selectedDate)
             updateWorkoutsForSelectedDate()
         }
         recyclerViewWeek.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
