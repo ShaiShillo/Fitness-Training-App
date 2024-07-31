@@ -94,9 +94,7 @@
             android:defaultValue="@null"/>
         <action
             android:id="@+id/action_createWorkoutFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/createWorkoutFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_createWorkoutFragment_to_addExerciseFragment"
             app:destination="@id/addExerciseFragment" />

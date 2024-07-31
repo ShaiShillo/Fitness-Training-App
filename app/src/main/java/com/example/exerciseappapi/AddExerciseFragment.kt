@@ -36,6 +36,7 @@ class AddExerciseFragment : Fragment() {
     private lateinit var binding: FragmentAddExerciseBinding
     private var imageUri: Uri? = null
     private var exerciseToEdit: Exercise? = null
+    private var permissionsGranted = false
 
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocument()
@@ -64,9 +65,10 @@ class AddExerciseFragment : Fragment() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions.all { it.value }) {
-            // All permissions granted
+            permissionsGranted = true
         } else {
             Toast.makeText(requireContext(), "Permissions not granted", Toast.LENGTH_SHORT).show()
+            permissionsGranted = false
         }
     }
 
@@ -102,7 +104,11 @@ class AddExerciseFragment : Fragment() {
         }
 
         binding.exerciseImageView.setOnClickListener {
-            showImageOptionsBottomSheet()
+            if (permissionsGranted) {
+                showImageOptionsBottomSheet()
+            } else {
+                Toast.makeText(requireContext(), "Permissions not granted", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.saveExerciseButton.setOnClickListener {
@@ -268,6 +274,11 @@ class AddExerciseFragment : Fragment() {
     }
 
     private fun saveExercise() {
+        if (!permissionsGranted) {
+            Toast.makeText(requireContext(), "Permissions not granted", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val name = binding.exerciseNameEditText.text.toString()
         val bodyPart = binding.bodyPartSpinner.selectedItem as? String
         val equipment = binding.equipmentSpinner.selectedItem as? String
@@ -310,6 +321,11 @@ class AddExerciseFragment : Fragment() {
     }
 
     private fun saveChanges() {
+        if (!permissionsGranted) {
+            Toast.makeText(requireContext(), "Permissions not granted", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val name = binding.exerciseNameEditText.text.toString()
         val bodyPart = binding.bodyPartSpinner.selectedItem as? String
         val equipment = binding.equipmentSpinner.selectedItem as? String
@@ -352,7 +368,7 @@ class AddExerciseFragment : Fragment() {
     }
 
     private fun getPlaceholderUri(): String {
-        return Uri.parse("android.resource://${requireContext().packageName}/drawable/placeholder").toString()
+        return Uri.parse("android.resource://${requireContext().packageName}/drawable/img").toString()
     }
 
     private fun clearSpinner(spinner: Spinner) {
