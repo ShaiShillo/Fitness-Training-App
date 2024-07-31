@@ -6,6 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="48dp"
         android:layout_height="72dp"
+        android:layoutDirection="ltr"
         android:background="@drawable/day_item_background"
         android:padding="4dp"
         tools:ignore="TextSizeCheck">

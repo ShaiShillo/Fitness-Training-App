@@ -17,10 +17,10 @@ class WeeklyCalendarAdapter(
     class DayViewHolder(private val binding: ItemDayBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(day: Date, isSelected: Boolean, onDayClick: (Date) -> Unit) {
             val dayFormat = SimpleDateFormat("d", Locale.getDefault())
-            val dayOfWeekFormat = SimpleDateFormat("E", Locale.getDefault())
+            val dayOfWeekFormat = SimpleDateFormat("E", Locale("he")) // Use Hebrew locale
 
             binding.textViewDay.text = dayFormat.format(day)
-            binding.textViewDayOfWeek.text = dayOfWeekFormat.format(day).first().toString()
+            binding.textViewDayOfWeek.text = dayOfWeekFormat.format(day) // Remove `.first().toString()` to keep the full day name in Hebrew
             binding.root.isSelected = isSelected
             binding.root.setOnClickListener { onDayClick(day) }
         }
