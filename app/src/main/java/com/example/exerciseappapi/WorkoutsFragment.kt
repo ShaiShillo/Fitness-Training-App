@@ -15,8 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.FragmentWorkoutsBinding
 import com.example.exerciseappapi.utils.DialogUtils
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.flow.collect
+
 import kotlinx.coroutines.launch
 
 class WorkoutsFragment : Fragment() {

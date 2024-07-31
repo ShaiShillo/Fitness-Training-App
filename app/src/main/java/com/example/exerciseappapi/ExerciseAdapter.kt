@@ -25,6 +25,11 @@ class ExerciseAdapter(
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
     private val selectedItems = SparseBooleanArray()
 
+
+    fun addExerciseToTop(exercise: Exercise) {
+        exercises.add(0, exercise)
+        notifyItemInserted(0)
+    }
     fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises)

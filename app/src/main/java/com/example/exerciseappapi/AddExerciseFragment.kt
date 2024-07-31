@@ -1,7 +1,6 @@
 package com.example.exerciseappapi
 
 import android.Manifest
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -18,7 +17,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -40,26 +38,27 @@ class AddExerciseFragment : Fragment() {
     private var exerciseToEdit: Exercise? = null
 
     private val pickImageLauncher = registerForActivityResult(
-        ActivityResultContracts.OpenDocument(),
-        ActivityResultCallback { uri ->
-            uri?.let {
-                requireContext().contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                imageUri = it
-                binding.exerciseImageView.setImageURI(it)
-            }
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            requireContext().contentResolver.takePersistableUriPermission(
+                it,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+            imageUri = it
+            binding.exerciseImageView.setImageURI(it)
         }
-    )
+    }
 
     private val captureImageLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicturePreview(),
-        ActivityResultCallback { bitmap ->
-            bitmap?.let {
-                val uri = saveImage(requireContext(), it)
-                imageUri = uri
-                binding.exerciseImageView.setImageURI(uri)
-            }
+        ActivityResultContracts.TakePicturePreview()
+    ) { bitmap ->
+        bitmap?.let {
+            val uri = saveImage(requireContext(), it)
+            imageUri = uri
+            binding.exerciseImageView.setImageURI(uri)
         }
-    )
+    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -367,7 +366,7 @@ class AddExerciseFragment : Fragment() {
         binding.secondaryMusclesEditText.setText(exercise.secondaryMuscles.joinToString(","))
         binding.instructionsEditText.setText(exercise.instructions.joinToString(","))
 
-        exercise.gifUrl?.let {
+        exercise.gifUrl.let {
             imageUri = Uri.parse(it)
             binding.exerciseImageView.setImageURI(imageUri)
         }

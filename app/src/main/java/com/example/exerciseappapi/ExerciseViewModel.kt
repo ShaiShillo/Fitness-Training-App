@@ -2,9 +2,12 @@ package com.example.exerciseappapi
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -110,7 +113,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-
     fun getWorkoutsForDate(date: String): LiveData<List<WorkoutEntity>> {
         val workoutsForDate = MutableLiveData<List<WorkoutEntity>>()
         viewModelScope.launch {
@@ -127,6 +129,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             fetchWorkouts()
         }
     }
+
     fun getAllWorkoutsLiveData(): LiveData<List<WorkoutEntity>> {
         return exerciseRepository.getAllWorkouts().asLiveData()
     }
@@ -207,7 +210,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun addExercise(exercise: Exercise) {
         viewModelScope.launch {
             exerciseRepository.addExercise(exercise)
-            loadExercises() // Reload exercises after adding a new one
+            val currentExercises = _exercises.value?.toMutableList() ?: mutableListOf()
+            currentExercises.add(0, exercise) // Add new exercise at the top
+            _exercises.postValue(currentExercises)
         }
     }
 

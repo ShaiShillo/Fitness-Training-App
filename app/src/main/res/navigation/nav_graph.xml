@@ -44,7 +44,9 @@
             app:nullable="true" />
         <action
             android:id="@+id/action_addExerciseFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/addExerciseFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -92,7 +94,9 @@
             android:defaultValue="@null"/>
         <action
             android:id="@+id/action_createWorkoutFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/createWorkoutFragment"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_createWorkoutFragment_to_addExerciseFragment"
             app:destination="@id/addExerciseFragment" />
@@ -120,8 +124,8 @@
         android:label="SplashFragment"
         tools:layout="@layout/fragment_splash" >
         <action
-            android:id="@+id/action_splashFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
+            android:id="@+id/action_splashFragment_to_HomeFragment"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>

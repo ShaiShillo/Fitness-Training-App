@@ -24,13 +24,10 @@ class MainActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (navController.currentDestination?.id == R.id.mainFragment) {
-                    finish()  // Exit the app if back is pressed on the main fragment
-                } else {
-                    // Navigate back or handle other back press behavior
-                    if (!navController.popBackStack()) {
-                        finish()  // Exit the app if no more fragments in the back stack
-                    }
+                if (navController.currentDestination?.id == R.id.homeFragment) {
+                    finish()  // Exit the app if back is pressed on the home fragment
+                } else if (!navController.popBackStack()) {
+                    finish()  // Exit the app if no more fragments in the back stack
                 }
             }
         })

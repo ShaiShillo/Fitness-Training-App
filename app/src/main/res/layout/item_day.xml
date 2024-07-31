@@ -7,18 +7,19 @@
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:background="@drawable/day_item_background"
-        android:padding="4dp">
+        android:padding="4dp"
+        tools:ignore="TextSizeCheck">
 
         <TextView
-            android:textStyle="bold"
             android:id="@+id/textViewDayOfWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textColor="@color/day_text_color"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="M" />
 
         <TextView
@@ -27,10 +28,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@color/day_text_color"
-            app:layout_constraintTop_toBottomOf="@id/textViewDayOfWeek"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewDayOfWeek"
             tools:text="15" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

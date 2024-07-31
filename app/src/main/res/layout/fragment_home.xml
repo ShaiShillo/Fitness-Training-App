@@ -62,9 +62,10 @@
             android:layout_margin="16dp"
             android:contentDescription="@string/choose_workout"
             android:src="@drawable/ic_add"
+            app:backgroundTint="@color/light_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@color/dark_blue"
-            app:backgroundTint="@color/light_blue"/>
+            tools:ignore="ImageContrastCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

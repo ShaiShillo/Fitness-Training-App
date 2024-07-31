@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -50,7 +51,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="* Exercise Name"
+                        android:text="@string/exercise_name"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp" />
 
@@ -58,15 +59,17 @@
                         android:id="@+id/exerciseNameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Exercise Name"
+                        android:autofillHints=""
+                        android:hint="@string/exercise_name_fae"
                         android:inputType="text"
-                        android:minHeight="48dp" />
+                        android:minHeight="48dp"
+                        android:textColorHint="#757575" />
 
                     <TextView
                         android:id="@+id/bodyPartTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="* Select Body Part"
+                        android:text="@string/select_body_part_fae"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp"
                         android:visibility="gone" />
@@ -83,7 +86,7 @@
                         android:id="@+id/targetTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="* Select Target"
+                        android:text="@string/select_target_fae"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp"
                         android:visibility="gone" />
@@ -102,7 +105,7 @@
                         android:id="@+id/equipmentTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="* Select Equipment"
+                        android:text="@string/select_equipment_fae"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp"
                         android:visibility="gone" />
@@ -121,7 +124,7 @@
                         android:id="@+id/secondaryMusclesTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Secondary Muscles (optional)"
+                        android:text="@string/secondary_muscles_optional"
                         android:layout_marginTop="8dp"
                         android:visibility="gone" />
 
@@ -129,15 +132,18 @@
                         android:id="@+id/secondaryMusclesEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Secondary Muscles (comma separated)"
+                        android:hint="@string/secondary_muscles_comma_separated"
                         android:inputType="text"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:ignore="Autofill" />
 
                     <TextView
                         android:id="@+id/instructionsTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Instructions (optional)"
+                        android:autofillHints=""
+                        android:importantForAutofill="no"
+                        android:text="@string/instructions_optional"
                         android:layout_marginTop="8dp"
                         android:visibility="gone" />
 
@@ -145,18 +151,20 @@
                         android:id="@+id/instructionsEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Instructions (comma separated)"
+                        android:hint="@string/instructions_comma_separated"
                         android:inputType="text"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:ignore="Autofill" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:backgroundTint="@color/dark_blue"
-                        android:textColor="@color/white"
-                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/saveExerciseButton"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp" />
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/dark_blue"
+                        android:contentDescription="@string/save_exercise_button"
+                        android:textColor="@color/white" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

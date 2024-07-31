@@ -13,14 +13,12 @@ import android.widget.Spinner
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.BottomSheetFilterBinding
 import com.example.exerciseappapi.databinding.FragmentMainBinding
-import com.example.exerciseappapi.utils.DialogUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -56,7 +54,7 @@ class MainFragment : Fragment() {
                     if (isSelectingExercises) {
                         findNavController().navigateUp()
                     } else {
-                        requireActivity().finish()
+                        findNavController().popBackStack() // Navigate up the back stack
                     }
                 }
             }
@@ -120,7 +118,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.filteredExercises.observe(viewLifecycleOwner, Observer { exercises ->
+        viewModel.filteredExercises.observe(viewLifecycleOwner) { exercises ->
             binding.loadingProgressBar.visibility = View.GONE
             Log.d("MainFragment", "Filtered exercises: ${exercises.size}")
             if (exercises.isEmpty()) {
@@ -133,12 +131,23 @@ class MainFragment : Fragment() {
                 binding.recyclerView.visibility = View.VISIBLE
                 adapter.setExercises(exercises)
             }
-        })
+        }
 
         // Show the loading indicator while data is being fetched
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
+        }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("exerciseAdded")
+            ?.observe(viewLifecycleOwner) { exerciseAdded ->
+                if (exerciseAdded == true) {
+                    viewModel.loadExercises()
+                }
+            }
+        // Observe the exercises LiveData and add new exercises to the top
+        viewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            adapter.setExercises(exercises)
+        }
     }
 
     private fun setupListeners() {
@@ -148,13 +157,6 @@ class MainFragment : Fragment() {
                 clearSearchAndFilters()
             }
         }
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("exerciseAdded")
-            ?.observe(viewLifecycleOwner) { exerciseAdded ->
-                if (exerciseAdded == true) {
-                    viewModel.loadExercises()
-                }
-            }
     }
 
     private fun clearSearchAndFilters() {
@@ -342,18 +344,18 @@ class MainFragment : Fragment() {
     }
 
     private fun showDeleteConfirmationDialog(exercise: Exercise, position: Int) {
-        DialogUtils.showDeleteConfirmationDialog(
-            context = requireContext(),
-            title = "Delete Exercise",
-            message = "Are you sure you want to delete this exercise?",
-            onConfirm = {
-                selectedExercises.removeAt(position)
-                adapter.notifyItemRemoved(position)
-                viewModel.deleteExercise(exercise)
-            },
-            onCancel = {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Exercise")
+            .setMessage("Are you sure you want to delete this exercise?")
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
                 adapter.notifyItemChanged(position)
             }
-        )
+            .setPositiveButton("Delete") { dialog, _ ->
+                viewModel.deleteExercise(exercise)
+                adapter.removeExerciseAt(position)
+                dialog.dismiss()
+            }
+            .show()
     }
 }

@@ -13,7 +13,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Workouts"
+            android:text="@string/my_workouts"
             android:textSize="24sp"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
@@ -38,10 +38,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:tint="@color/dark_blue"
             android:backgroundTint="@color/light_blue"
-            app:srcCompat="@drawable/ic_add"
+            android:contentDescription="@string/create_a_new_workout"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@color/dark_blue"
+            tools:ignore="ImageContrastCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

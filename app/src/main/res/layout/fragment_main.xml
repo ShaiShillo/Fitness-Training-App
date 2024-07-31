@@ -36,14 +36,17 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginEnd="18dp"
                     android:layout_toStartOf="@+id/addExerciseIcon"
+                    android:autofillHints=""
                     android:background="@drawable/search_background"
                     android:drawableStart="@drawable/ic_search"
                     android:drawablePadding="4dp"
-                    android:hint="Search exercises by name"
+                    android:hint="@string/search_exercises_by_name_fm"
                     android:inputType="text"
                     android:padding="8dp"
                     android:paddingStart="8dp"
-                    android:paddingEnd="8dp" />
+                    android:paddingEnd="8dp"
+                    android:textColorHint="#757575"
+                    tools:ignore="VisualLintTextFieldSize,TouchTargetSizeCheck" />
 
                 <ImageButton
                     android:id="@+id/addExerciseIcon"
@@ -53,9 +56,10 @@
 
                     android:layout_toStartOf="@+id/filterIcon"
                     android:background="@drawable/search_background"
-                    android:contentDescription="Add Exercise Icon"
+                    android:contentDescription="@string/add_exercise_icon"
                     android:padding="8dp"
-                    android:src="@drawable/ic_add" />
+                    android:src="@drawable/ic_add"
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <ImageButton
                     android:id="@+id/filterIcon"
@@ -63,9 +67,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/search_background"
-                    android:contentDescription="Filter Icon"
+                    android:contentDescription="@string/filter_icon_fm"
                     android:padding="8dp"
-                    android:src="@drawable/ic_filter" />
+                    android:src="@drawable/ic_filter"
+                    tools:ignore="TouchTargetSizeCheck" />
 
             </RelativeLayout>
 
@@ -83,7 +88,7 @@
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="Oops! 😢 We haven't found an exercise for that yet, maybe you can create a new one 😉"
+                android:text="@string/oops_we_haven_t_found_an_exercise_for_that_yet_maybe_you_can_create_a_new_one"
                 android:textSize="18sp"
                 android:visibility="gone" />
 
@@ -96,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Create A New Exercise"
+                android:text="@string/create_a_new_exercise"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -115,8 +120,10 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:backgroundTint="@color/light_blue"
+            android:contentDescription="TODO"
             app:srcCompat="@drawable/ic_add_exercises_to_workout"
             app:tint="@color/dark_blue"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="ContentDescription,HardcodedText" />
     </FrameLayout>
 </layout>

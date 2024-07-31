@@ -8,14 +8,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter Exercises"
+        android:text="@string/filter_exercises"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:layout_marginBottom="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Body Part"
+        android:text="@string/select_body_part_bsf"
         android:layout_marginBottom="8dp"/>
 
     <Spinner
@@ -23,12 +23,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:prompt="@string/select_body_part"/>
+        android:minHeight="48dp"
+        android:prompt="@string/select_body_part" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Target Muscle"
+        android:text="@string/select_target_muscle"
         android:layout_marginBottom="8dp"/>
 
     <Spinner
@@ -36,14 +37,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:enabled="false"
         android:alpha="0.5"
-        android:prompt="@string/select_target"/>
+        android:enabled="false"
+        android:minHeight="48dp"
+        android:prompt="@string/select_target" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Equipment"
+        android:text="@string/select_equipment_bsf"
         android:layout_marginBottom="8dp"/>
 
     <Spinner
@@ -51,9 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:enabled="false"
         android:alpha="0.5"
-        android:prompt="@string/select_equipment"/>
+        android:enabled="false"
+        android:minHeight="48dp"
+        android:prompt="@string/select_equipment" />
 
 
     <com.google.android.material.button.MaterialButton
@@ -63,7 +66,7 @@
         android:backgroundTint="@color/dark_blue"
         android:textColor="@color/white"
         android:layout_height="wrap_content"
-        android:text="Apply Filters"
+        android:text="@string/apply_filters_btf"
         style="?attr/materialButtonOutlinedStyle" />
 
 </LinearLayout>

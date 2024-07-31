@@ -20,7 +20,7 @@ class ExerciseDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentExerciseDetailBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.exerciseViewModel = exerciseViewModel
@@ -42,6 +42,7 @@ class ExerciseDetailFragment : Fragment() {
 }
 
 // Extension function to capitalize words
-fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.replaceFirstChar {
-    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it ->
+    it.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
 } }

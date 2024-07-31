@@ -50,7 +50,7 @@ class SplashFragment : Fragment() {
         // Navigate to MainFragment after splash screen duration
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAdded) {
-                findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
+                findNavController().navigate(R.id.action_splashFragment_to_HomeFragment)
             }
         }, splashScreenDuration)
     }
@@ -62,7 +62,7 @@ class SplashFragment : Fragment() {
 
         handler.post(object : Runnable {
             override fun run() {
-                if (progress <= progressBar?.max ?: 0) {
+                if (progress <= (progressBar?.max ?: 0)) {
                     progressBar?.progress = progress
                     progress++
                     handler.postDelayed(this, updateInterval)

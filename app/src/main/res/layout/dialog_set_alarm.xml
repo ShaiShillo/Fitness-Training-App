@@ -21,24 +21,24 @@
             android:id="@+id/radio_15_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="15 minutes before" />
+            android:text="@string/_15_minutes_before" />
 
         <RadioButton
             android:id="@+id/radio_30_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="30 minutes before" />
+            android:text="@string/_30_minutes_before" />
 
         <RadioButton
             android:id="@+id/radio_1_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1 hour before" />
+            android:text="@string/_1_hour_before" />
 
         <RadioButton
             android:id="@+id/radio_3_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3 hours before" />
+            android:text="@string/_3_hours_before" />
     </RadioGroup>
 </LinearLayout>
