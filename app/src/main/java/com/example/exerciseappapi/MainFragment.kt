@@ -110,8 +110,6 @@ class MainFragment : Fragment() {
     private fun setupExerciseSelection() {
         binding.fabConfirmSelection.visibility = View.VISIBLE
         binding.fabConfirmSelection.setOnClickListener {
-            // Log selected exercises
-            Log.d("MainFragment", "Selected exercises: ${selectedExercises.size}")
 
             // Pass selected exercises back to the previous fragment
             findNavController().previousBackStackEntry?.savedStateHandle?.set("selectedExercises", selectedExercises.toList())
@@ -122,7 +120,6 @@ class MainFragment : Fragment() {
     private fun setupObservers() {
         viewModel.filteredExercises.observe(viewLifecycleOwner) { exercises ->
             binding.loadingProgressBar.visibility = View.GONE
-            Log.d("MainFragment", "Filtered exercises: ${exercises.size}")
             if (exercises.isEmpty()) {
                 binding.noExercisesTextView.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE
@@ -298,7 +295,6 @@ class MainFragment : Fragment() {
 
     private fun filterExercises() {
         binding.loadingProgressBar.visibility = View.VISIBLE
-        Log.d("MainFragment", "Filter - searchText: $searchText, bodyPart: $selectedBodyPart, target: $selectedTarget, equipment: $selectedEquipment")
         viewModel.searchExercises(searchText, selectedBodyPart, selectedTarget, selectedEquipment)
     }
 

@@ -235,7 +235,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         } else {
             "No secondary muscles"
         }
-        Log.d("ExerciseViewModel", "Chip Text: $chipText")
         return chipText
     }
 }

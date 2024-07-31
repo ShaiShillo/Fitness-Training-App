@@ -44,7 +44,6 @@ class WorkoutsFragment : Fragment() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("workoutAdded")
             ?.observe(viewLifecycleOwner) { workoutAdded ->
                 if (workoutAdded == true) {
-                    Log.d("WorkoutsFragment", "New workout added")
                     viewModel.fetchWorkouts()
                 }
             }

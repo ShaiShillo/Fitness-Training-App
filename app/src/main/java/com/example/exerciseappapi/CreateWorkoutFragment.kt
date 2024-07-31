@@ -116,14 +116,9 @@ class CreateWorkoutFragment : Fragment() {
         // Handle the received exercises from MainFragment
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<List<Exercise>>("selectedExercises")
             ?.observe(viewLifecycleOwner) { exercises ->
-                Log.d("CreateWorkoutFragment", "Received exercises: ${exercises?.size ?: 0}")
                 if (exercises != null) {
                     selectedExercises.clear()
                     selectedExercises.addAll(exercises)
-                    Log.d(
-                        "CreateWorkoutFragment",
-                        "Selected exercises after update: ${selectedExercises.size}"
-                    )
                     adapter.notifyDataSetChanged()
                 }
             }
