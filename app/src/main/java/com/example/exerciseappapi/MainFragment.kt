@@ -59,6 +59,8 @@ class MainFragment : Fragment() {
                 }
             }
         )
+        // Set visibility of addExerciseIcon based on isSelectingExercises
+        binding.addExerciseIcon.visibility = if (isSelectingExercises) View.GONE else View.VISIBLE
 
         // Retrieve existing selected exercises
         val existingSelectedExercises = arguments?.getParcelableArrayList<Exercise>("selectedExercises")
@@ -123,8 +125,10 @@ class MainFragment : Fragment() {
             Log.d("MainFragment", "Filtered exercises: ${exercises.size}")
             if (exercises.isEmpty()) {
                 binding.noExercisesTextView.visibility = View.VISIBLE
-                binding.noExercisesCreateNewButton.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE
+                if(!isSelectingExercises) {
+                    binding.noExercisesCreateNewButton.visibility = View.VISIBLE
+                } else { binding.noExercisesCreateNewButton.visibility = View.GONE}
             } else {
                 binding.noExercisesTextView.visibility = View.GONE
                 binding.noExercisesCreateNewButton.visibility = View.GONE
