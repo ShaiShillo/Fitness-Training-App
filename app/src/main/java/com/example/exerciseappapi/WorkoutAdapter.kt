@@ -3,7 +3,6 @@ package com.example.exerciseappapi
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exerciseappapi.databinding.ItemWorkoutBinding
 
@@ -14,7 +13,8 @@ class WorkoutAdapter(
     private val onDeleteClick: (WorkoutEntity, Int) -> Unit,
     private val showEditButton: Boolean = true,
     private val showDeleteButton: Boolean = true,
-    private val showAddAlarmButton: Boolean = false
+    private val showAddAlarmButton: Boolean = false,
+    private val onAddAlarmClick: (WorkoutEntity) -> Unit = {}
 ) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
@@ -62,12 +62,9 @@ class WorkoutAdapter(
             binding.addAlarmButton.apply {
                 visibility = if (showAddAlarmButton) View.VISIBLE else View.GONE
                 setOnClickListener {
-                    // Handle add alarm click
-                    // For now, just showing a toast
-                    Toast.makeText(binding.root.context, "Add alarm for ${workout.workoutName}", Toast.LENGTH_SHORT).show()
+                    onAddAlarmClick(workout)
                 }
             }
         }
     }
 }
-

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:timePickerMode="spinner" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_15_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15 minutes before" />
+
+        <RadioButton
+            android:id="@+id/radio_30_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30 minutes before" />
+
+        <RadioButton
+            android:id="@+id/radio_1_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 hour before" />
+
+        <RadioButton
+            android:id="@+id/radio_3_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 hours before" />
+    </RadioGroup>
+</LinearLayout>
