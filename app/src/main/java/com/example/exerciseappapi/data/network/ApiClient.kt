@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.data.network
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

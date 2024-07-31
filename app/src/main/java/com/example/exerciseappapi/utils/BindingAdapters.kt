@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.utils
 
 import android.widget.ImageView
 import android.widget.TextView

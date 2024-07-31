@@ -1,5 +1,6 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.data.network
 
+import com.example.exerciseappapi.models.Exercise
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

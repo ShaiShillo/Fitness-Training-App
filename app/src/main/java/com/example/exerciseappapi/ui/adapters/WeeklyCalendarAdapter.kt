@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

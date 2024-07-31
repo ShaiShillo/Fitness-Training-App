@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.fragments
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -19,7 +19,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exerciseappapi.utils.AlarmReceiver
+import com.example.exerciseappapi.viewmodels.ViewModel
+import com.example.exerciseappapi.R
+import com.example.exerciseappapi.ui.adapters.WeeklyCalendarAdapter
+import com.example.exerciseappapi.ui.adapters.WorkoutAdapter
+import com.example.exerciseappapi.models.WorkoutEntity
 import com.example.exerciseappapi.databinding.FragmentHomeBinding
+import com.example.exerciseappapi.models.toWorkout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -29,7 +36,7 @@ import java.util.Locale
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var exerciseViewModel: ExerciseViewModel
+    private lateinit var viewModel: ViewModel
     private lateinit var selectedDate: String
     private lateinit var calendarAdapter: WeeklyCalendarAdapter
 
@@ -40,7 +47,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        exerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
 
         // Initialize selectedDate to the current date
         selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -70,7 +77,7 @@ class HomeFragment : Fragment() {
         val recyclerViewWeek = binding.weeklyCalendarContainer.recyclerViewWeek
         calendarAdapter = WeeklyCalendarAdapter(emptyList()) { date ->
             selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
-            exerciseViewModel.setSelectedDate(selectedDate)
+            viewModel.setSelectedDate(selectedDate)
             updateWorkoutsForSelectedDate()
         }
         recyclerViewWeek.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -121,7 +128,7 @@ class HomeFragment : Fragment() {
                 // Handle edit click
             },
             { workout, position ->
-                exerciseViewModel.removeWorkoutFromDate(workout, selectedDate)
+                viewModel.removeWorkoutFromDate(workout, selectedDate)
                 updateWorkoutsForSelectedDate()
             },
             showEditButton = false,
@@ -133,7 +140,7 @@ class HomeFragment : Fragment() {
         )
         binding.recyclerView.adapter = adapter
 
-        exerciseViewModel.workoutsForSelectedDate.observe(viewLifecycleOwner) { workouts ->
+        viewModel.workoutsForSelectedDate.observe(viewLifecycleOwner) { workouts ->
             adapter.setWorkouts(workouts)
         }
 
@@ -147,7 +154,7 @@ class HomeFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val workout = adapter.getWorkoutAt(position)
-                exerciseViewModel.removeWorkoutFromDate(workout, selectedDate)
+                viewModel.removeWorkoutFromDate(workout, selectedDate)
                 updateWorkoutsForSelectedDate()
             }
         })
@@ -155,7 +162,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateWorkoutsForSelectedDate() {
-        exerciseViewModel.getWorkoutsForDate(selectedDate).observe(viewLifecycleOwner) { workouts ->
+        viewModel.getWorkoutsForDate(selectedDate).observe(viewLifecycleOwner) { workouts ->
             (binding.recyclerView.adapter as WorkoutAdapter).setWorkouts(workouts)
             binding.cardView.visibility = if (workouts.isEmpty()) View.GONE else View.VISIBLE
         }
@@ -172,7 +179,7 @@ class HomeFragment : Fragment() {
             mutableListOf(),
             { workout ->
                 if (selectedDate.isNotEmpty()) {
-                    exerciseViewModel.addWorkoutToDate(workout, selectedDate)
+                    viewModel.addWorkoutToDate(workout, selectedDate)
                     bottomSheetDialog.dismiss()
                     updateWorkoutsForSelectedDate()
                 } else {
@@ -190,7 +197,7 @@ class HomeFragment : Fragment() {
         )
         recyclerView.adapter = adapter
 
-        exerciseViewModel.getAllWorkoutsLiveData().observe(viewLifecycleOwner) { workouts ->
+        viewModel.getAllWorkoutsLiveData().observe(viewLifecycleOwner) { workouts ->
             adapter.setWorkouts(workouts)
         }
 

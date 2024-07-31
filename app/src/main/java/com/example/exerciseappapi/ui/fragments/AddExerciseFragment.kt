@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.fragments
 
 import android.Manifest
 import android.content.ContentValues
@@ -25,6 +25,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.fragment.findNavController
+import com.example.exerciseappapi.models.Exercise
+import com.example.exerciseappapi.viewmodels.ViewModel
+import com.example.exerciseappapi.R
 import com.example.exerciseappapi.databinding.FragmentAddExerciseBinding
 import com.example.exerciseappapi.databinding.BottomSheetImageOptionsBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -32,7 +35,7 @@ import kotlinx.coroutines.launch
 
 class AddExerciseFragment : Fragment() {
 
-    private val viewModel: ExerciseViewModel by viewModels()
+    private val viewModel: ViewModel by viewModels()
     private lateinit var binding: FragmentAddExerciseBinding
     private var imageUri: Uri? = null
     private var exerciseToEdit: Exercise? = null

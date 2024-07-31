@@ -1,11 +1,18 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.data.repositories
 
+import com.example.exerciseappapi.utils.Converters
+import com.example.exerciseappapi.data.network.ExerciseApiService
+import com.example.exerciseappapi.data.db.ExerciseDao
+import com.example.exerciseappapi.data.db.WorkoutDao
+import com.example.exerciseappapi.models.Exercise
+import com.example.exerciseappapi.models.WorkoutDateEntity
+import com.example.exerciseappapi.models.WorkoutEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
-class ExerciseRepository(
+class Repository(
     private val exerciseDao: ExerciseDao,
     private val workoutDao: WorkoutDao,
     private val apiService: ExerciseApiService,
@@ -19,7 +26,7 @@ class ExerciseRepository(
                 val exerciseEntities = fetchedExercises.map { converters.exerciseToEntity(it) }
                 exerciseDao.insertAllExercises(exerciseEntities)
             } catch (e: Exception) {
-                // TODO: Handle the error
+                // Handle the error
             }
         }
     }

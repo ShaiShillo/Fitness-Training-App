@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.exerciseappapi.ExerciseViewModel" />
+            type="com.example.exerciseappapi.viewmodels.ViewModel" />
         <variable
             name="isEditMode"
             type="Boolean" />

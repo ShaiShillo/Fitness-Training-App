@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.exerciseappapi.R
 import com.example.exerciseappapi.databinding.FragmentSplashBinding
 
 class SplashFragment : Fragment() {

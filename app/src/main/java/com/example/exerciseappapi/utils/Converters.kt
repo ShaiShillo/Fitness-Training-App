@@ -1,6 +1,8 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.utils
 
 import androidx.room.TypeConverter
+import com.example.exerciseappapi.models.Exercise
+import com.example.exerciseappapi.models.ExerciseEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.Date

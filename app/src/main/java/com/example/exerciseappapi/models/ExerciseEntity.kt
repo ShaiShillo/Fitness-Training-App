@@ -1,8 +1,9 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.exerciseappapi.utils.Converters
 
 @Entity(tableName = "exercises")
 data class ExerciseEntity(

@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.models
 
 import android.os.Parcelable
 import androidx.room.PrimaryKey

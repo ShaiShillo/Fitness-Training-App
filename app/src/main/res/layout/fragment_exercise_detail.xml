@@ -6,11 +6,11 @@
     <data>
         <variable
             name="exercise"
-            type="com.example.exerciseappapi.Exercise" />
+            type="com.example.exerciseappapi.models.Exercise" />
 
         <variable
             name="exerciseViewModel"
-            type="com.example.exerciseappapi.ExerciseViewModel" />
+            type="com.example.exerciseappapi.viewmodels.ViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

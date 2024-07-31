@@ -1,10 +1,12 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exerciseappapi.models.WorkoutEntity
 import com.example.exerciseappapi.databinding.ItemWorkoutBinding
+import com.example.exerciseappapi.models.toWorkout
 
 class WorkoutAdapter(
     private val workouts: MutableList<WorkoutEntity>,

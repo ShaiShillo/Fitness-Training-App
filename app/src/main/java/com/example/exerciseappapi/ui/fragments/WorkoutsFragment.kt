@@ -1,7 +1,6 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +12,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exerciseappapi.viewmodels.ViewModel
+import com.example.exerciseappapi.R
+import com.example.exerciseappapi.models.Workout
+import com.example.exerciseappapi.ui.adapters.WorkoutAdapter
+import com.example.exerciseappapi.models.WorkoutEntity
 import com.example.exerciseappapi.databinding.FragmentWorkoutsBinding
+import com.example.exerciseappapi.models.toWorkout
 import com.example.exerciseappapi.utils.DialogUtils
 
 import kotlinx.coroutines.launch
 
 class WorkoutsFragment : Fragment() {
 
-    private val viewModel: ExerciseViewModel by viewModels()
+    private val viewModel: ViewModel by viewModels()
     private var _binding: FragmentWorkoutsBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: WorkoutAdapter

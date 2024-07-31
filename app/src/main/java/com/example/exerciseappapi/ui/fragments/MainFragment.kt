@@ -1,15 +1,15 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,14 +17,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exerciseappapi.models.Exercise
+import com.example.exerciseappapi.ui.adapters.ExerciseAdapter
+import com.example.exerciseappapi.viewmodels.ViewModel
+import com.example.exerciseappapi.R
 import com.example.exerciseappapi.databinding.BottomSheetFilterBinding
 import com.example.exerciseappapi.databinding.FragmentMainBinding
+import com.example.exerciseappapi.utils.DialogUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainFragment : Fragment() {
 
-    private val viewModel: ExerciseViewModel by viewModels()
+    private val viewModel: ViewModel by viewModels()
     private lateinit var binding: FragmentMainBinding
     private lateinit var adapter: ExerciseAdapter
 
@@ -344,18 +349,24 @@ class MainFragment : Fragment() {
     }
 
     private fun showDeleteConfirmationDialog(exercise: Exercise, position: Int) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Exercise")
-            .setMessage("Are you sure you want to delete this exercise?")
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-                adapter.notifyItemChanged(position)
+        DialogUtils.showDeleteConfirmationDialog(
+            context = requireContext(),
+            title = "Delete Exercise",
+            message = "Are you sure you want to delete this exercise?",
+            onConfirm = {
+                val exercises = viewModel.exercises.value
+                if (exercises != null && position < exercises.size) { // Check if position is valid
+                    viewModel.deleteExercise(exercise)
+                    adapter.removeExerciseAt(position)
+                } else {
+                    // Handle invalid position, show error message or log
+                    Toast.makeText(requireContext(), "Invalid position", Toast.LENGTH_SHORT).show()
+                    adapter.notifyItemChanged(position) // Ensure UI consistency
+                }
+            },
+            onCancel = {
+                adapter.notifyItemChanged(position) // Ensure UI consistency
             }
-            .setPositiveButton("Delete") { dialog, _ ->
-                viewModel.deleteExercise(exercise)
-                adapter.removeExerciseAt(position)
-                dialog.dismiss()
-            }
-            .show()
+        )
     }
 }

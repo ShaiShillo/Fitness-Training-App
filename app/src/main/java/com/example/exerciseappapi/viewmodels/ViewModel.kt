@@ -1,20 +1,25 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.exerciseappapi.data.network.ApiClient
+import com.example.exerciseappapi.data.db.AppDatabase
+import com.example.exerciseappapi.utils.Converters
+import com.example.exerciseappapi.models.Exercise
+import com.example.exerciseappapi.data.repositories.Repository
+import com.example.exerciseappapi.models.WorkoutEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
+class ViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val exerciseRepository: ExerciseRepository
+    private val repository: Repository
 
     private val _bodyParts = MutableLiveData<List<String>>()
     val bodyParts: LiveData<List<String>> get() = _bodyParts
@@ -58,7 +63,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         val workoutDao = AppDatabase.getDatabase(application).workoutDao()
         val apiService = ApiClient.apiService
         val converters = Converters()
-        exerciseRepository = ExerciseRepository(exerciseDao, workoutDao, apiService, converters)
+        repository = Repository(exerciseDao, workoutDao, apiService, converters)
         fetchBodyParts()
         fetchExercises()
         fetchAllEquipment()
@@ -70,7 +75,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun fetchWorkouts() {
         viewModelScope.launch {
-            exerciseRepository.getAllWorkouts().collect { workoutList ->
+            repository.getAllWorkouts().collect { workoutList ->
                 _workouts.value = workoutList
             }
         }
@@ -78,19 +83,19 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun addWorkout(workout: WorkoutEntity) {
         viewModelScope.launch {
-            exerciseRepository.addWorkout(workout)
+            repository.addWorkout(workout)
         }
     }
 
     fun deleteWorkout(workout: WorkoutEntity) {
         viewModelScope.launch {
-            exerciseRepository.deleteWorkout(workout)
+            repository.deleteWorkout(workout)
         }
     }
 
     fun updateWorkout(workout: WorkoutEntity) {
         viewModelScope.launch {
-            exerciseRepository.updateWorkout(workout)
+            repository.updateWorkout(workout)
         }
     }
 
@@ -108,7 +113,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun removeWorkoutFromDate(workout: WorkoutEntity, date: String) {
         viewModelScope.launch {
-            exerciseRepository.removeWorkoutFromDate(workout, date)
+            repository.removeWorkoutFromDate(workout, date)
             getWorkoutsForDate(date)
         }
     }
@@ -116,7 +121,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun getWorkoutsForDate(date: String): LiveData<List<WorkoutEntity>> {
         val workoutsForDate = MutableLiveData<List<WorkoutEntity>>()
         viewModelScope.launch {
-            exerciseRepository.getWorkoutsForDate(date).collect { workouts ->
+            repository.getWorkoutsForDate(date).collect { workouts ->
                 workoutsForDate.postValue(workouts)
             }
         }
@@ -125,19 +130,19 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun addWorkoutToDate(workout: WorkoutEntity, date: String) {
         viewModelScope.launch {
-            exerciseRepository.addWorkoutToDate(workout, date)
+            repository.addWorkoutToDate(workout, date)
             fetchWorkouts()
         }
     }
 
     fun getAllWorkoutsLiveData(): LiveData<List<WorkoutEntity>> {
-        return exerciseRepository.getAllWorkouts().asLiveData()
+        return repository.getAllWorkouts().asLiveData()
     }
 
     fun loadExercises() {
         _isLoading.value = true
         viewModelScope.launch {
-            exerciseRepository.getAllExercises().collect { exerciseEntities ->
+            repository.getAllExercises().collect { exerciseEntities ->
                 _isLoading.postValue(false)
                 val exerciseList = exerciseEntities.map { it }
                 _exercises.postValue(exerciseList)
@@ -151,7 +156,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private fun fetchBodyParts() {
         viewModelScope.launch {
-            exerciseRepository.getBodyParts().collect { bodyParts ->
+            repository.getBodyParts().collect { bodyParts ->
                 _bodyParts.postValue(bodyParts)
             }
         }
@@ -160,8 +165,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private fun fetchExercises() {
         _isLoading.postValue(true)
         viewModelScope.launch {
-            exerciseRepository.fetchExercisesFromApi()
-            exerciseRepository.getAllExercises().collect { exercises ->
+            repository.fetchExercisesFromApi()
+            repository.getAllExercises().collect { exercises ->
                 _filteredExercises.postValue(exercises)
                 _isLoading.postValue(false)
             }
@@ -170,7 +175,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun fetchAllEquipment() {
         viewModelScope.launch {
-            exerciseRepository.getAllEquipment().collect { equipment ->
+            repository.getAllEquipment().collect { equipment ->
                 _equipment.postValue(equipment)
             }
         }
@@ -183,7 +188,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun loadTargets(bodyPart: String) {
         viewModelScope.launch {
-            exerciseRepository.getTargetsByBodyPart(bodyPart).collect { targets ->
+            repository.getTargetsByBodyPart(bodyPart).collect { targets ->
                 _targets.postValue(targets)
             }
         }
@@ -191,7 +196,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun loadEquipment(bodyPart: String, target: String) {
         viewModelScope.launch {
-            exerciseRepository.getEquipmentByBodyPartAndTarget(bodyPart, target).collect { equipment ->
+            repository.getEquipmentByBodyPartAndTarget(bodyPart, target).collect { equipment ->
                 _equipment.postValue(equipment)
             }
         }
@@ -200,7 +205,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun searchExercises(name: String, bodyPart: String?, target: String?, equipment: String?) {
         _isLoading.postValue(true)
         viewModelScope.launch {
-            exerciseRepository.getExercises(name, bodyPart, target, equipment).collect { exercises ->
+            repository.getExercises(name, bodyPart, target, equipment).collect { exercises ->
                 _filteredExercises.postValue(exercises)
                 _isLoading.postValue(false)
             }
@@ -209,7 +214,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun addExercise(exercise: Exercise) {
         viewModelScope.launch {
-            exerciseRepository.addExercise(exercise)
+            repository.addExercise(exercise)
             val currentExercises = _exercises.value?.toMutableList() ?: mutableListOf()
             currentExercises.add(0, exercise) // Add new exercise at the top
             _exercises.postValue(currentExercises)
@@ -218,14 +223,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun deleteExercise(exercise: Exercise) {
         viewModelScope.launch {
-            exerciseRepository.deleteExercise(exercise)
+            repository.deleteExercise(exercise)
             _filteredExercises.value = _filteredExercises.value?.filter { it.id != exercise.id }
         }
     }
 
     fun updateExercise(exercise: Exercise) {
         viewModelScope.launch {
-            exerciseRepository.updateExercise(exercise)
+            repository.updateExercise(exercise)
         }
     }
 

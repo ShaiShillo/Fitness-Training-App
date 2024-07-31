@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

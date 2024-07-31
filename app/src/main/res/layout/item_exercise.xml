@@ -4,7 +4,7 @@
     <data>
         <variable
             name="exercise"
-            type="com.example.exerciseappapi.Exercise" />
+            type="com.example.exerciseappapi.models.Exercise" />
     </data>
 
     <androidx.cardview.widget.CardView

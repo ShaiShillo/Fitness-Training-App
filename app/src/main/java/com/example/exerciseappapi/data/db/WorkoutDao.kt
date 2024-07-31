@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.data.db
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,6 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.exerciseappapi.models.WorkoutDateEntity
+import com.example.exerciseappapi.models.WorkoutEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

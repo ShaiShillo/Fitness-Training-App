@@ -1,4 +1,4 @@
-package com.example.exerciseappapi
+package com.example.exerciseappapi.ui.adapters
 
 import android.graphics.drawable.Drawable
 import android.util.SparseBooleanArray
@@ -12,7 +12,9 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.exerciseappapi.models.Exercise
 import com.example.exerciseappapi.databinding.ItemExerciseBinding
+import com.example.exerciseappapi.ui.fragments.capitalizeWords
 
 class ExerciseAdapter(
     private val exercises: MutableList<Exercise>,
