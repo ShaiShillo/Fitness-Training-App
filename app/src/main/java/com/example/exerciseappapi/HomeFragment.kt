@@ -4,17 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CalendarView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.exerciseappapi.ExerciseViewModel
-import com.example.exerciseappapi.R
-import com.example.exerciseappapi.WorkoutAdapter
-import com.example.exerciseappapi.WorkoutEntity
 import com.example.exerciseappapi.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
@@ -25,7 +20,9 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var exerciseViewModel: ExerciseViewModel
     private lateinit var selectedDate: String
-    private lateinit var adapter: WorkoutAdapter
+    private lateinit var calendarAdapter: WeeklyCalendarAdapter
+
+    private var currentWeekStart: Calendar = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +31,7 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         exerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
 
-        setupCalendarView()
+        setupWeeklyCalendar()
         setupRecyclerView()
 
         binding.fab.setOnClickListener {
@@ -44,33 +41,69 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupCalendarView() {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        selectedDate = sdf.format(Date())
-        binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            selectedDate = "$year-${month + 1}-$dayOfMonth"
-            exerciseViewModel.setSelectedDate(selectedDate)
-            updateWorkoutsForSelectedDate()
+    private fun setupWeeklyCalendar() {
+        val yearMonthTextView = binding.weeklyCalendarContainer.textViewYearMonth
+        updateWeeklyCalendar(yearMonthTextView)
+
+        binding.weeklyCalendarContainer.previousWeekButton.setOnClickListener {
+            currentWeekStart.add(Calendar.WEEK_OF_YEAR, -1)
+            updateWeeklyCalendar(yearMonthTextView)
         }
+
+        binding.weeklyCalendarContainer.nextWeekButton.setOnClickListener {
+            currentWeekStart.add(Calendar.WEEK_OF_YEAR, 1)
+            updateWeeklyCalendar(yearMonthTextView)
+        }
+    }
+
+    private fun updateWeeklyCalendar(yearMonthTextView: TextView) {
+        val daysOfWeek = getDaysOfWeek(currentWeekStart.time)
+        val recyclerViewWeek = binding.weeklyCalendarContainer.recyclerViewWeek
+
+        if (!::calendarAdapter.isInitialized) {
+            calendarAdapter = WeeklyCalendarAdapter(daysOfWeek) { date ->
+                selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+                exerciseViewModel.setSelectedDate(selectedDate)
+                updateWorkoutsForSelectedDate()
+            }
+            recyclerViewWeek.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            recyclerViewWeek.adapter = calendarAdapter
+        } else {
+            calendarAdapter.updateDays(daysOfWeek)
+        }
+
+        val yearMonthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+        yearMonthTextView.text = yearMonthFormat.format(currentWeekStart.time)
+    }
+
+    private fun getDaysOfWeek(startDate: Date): List<Date> {
+        val calendar = Calendar.getInstance()
+        calendar.time = startDate
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+        val days = mutableListOf<Date>()
+        for (i in 0..6) {
+            days.add(calendar.time)
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        return days
     }
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = WorkoutAdapter(mutableListOf(), { workout ->
-            // Handle item click here
+        val adapter = WorkoutAdapter(mutableListOf(), { workout ->
             showWorkoutDetails(workout)
         }, { workout ->
             // Handle edit click
         }, { workout, position ->
-            // Handle delete click
-        }, hideButtons = true) // Hide buttons in HomeFragment
+            exerciseViewModel.removeWorkoutFromDate(workout, selectedDate)
+            updateWorkoutsForSelectedDate()
+        })
         binding.recyclerView.adapter = adapter
 
         exerciseViewModel.workoutsForSelectedDate.observe(viewLifecycleOwner) { workouts ->
             adapter.setWorkouts(workouts)
         }
 
-        // Add swipe-to-delete functionality
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -89,10 +122,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateWorkoutsForSelectedDate() {
-        exerciseViewModel.getWorkoutsForDate(selectedDate).observe(viewLifecycleOwner, { workouts ->
-            adapter.setWorkouts(workouts)
+        exerciseViewModel.getWorkoutsForDate(selectedDate).observe(viewLifecycleOwner) { workouts ->
+            (binding.recyclerView.adapter as WorkoutAdapter).setWorkouts(workouts)
             binding.cardView.visibility = if (workouts.isEmpty()) View.GONE else View.VISIBLE
-        })
+        }
     }
 
     private fun showBottomSheetDialog() {
@@ -100,7 +133,6 @@ class HomeFragment : Fragment() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_select_workout, null)
         bottomSheetDialog.setContentView(bottomSheetView)
 
-        // Setup RecyclerView inside the BottomSheetDialog
         val recyclerView = bottomSheetView.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = WorkoutAdapter(mutableListOf(), { workout ->
@@ -122,16 +154,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun showWorkoutDetails(workout: WorkoutEntity) {
-        // Display the workout details, you can navigate to another fragment or show a dialog
-        // For demonstration, let's show a dialog
         val workoutDetailsDialog = BottomSheetDialog(requireContext())
         workoutDetailsDialog.setContentView(R.layout.fragment_workout_detail)
 
-        // Populate the details into the dialog
-        // Assuming fragment_workout_detail.xml has TextViews with ids workoutNameTextView, workoutDateTextView, etc.
         workoutDetailsDialog.findViewById<TextView>(R.id.workoutNameTextView)?.text = workout.workoutName
         workoutDetailsDialog.findViewById<TextView>(R.id.workoutDateTextView)?.text = workout.creationDate.toString()
-        // Add more details as necessary
 
         workoutDetailsDialog.show()
     }

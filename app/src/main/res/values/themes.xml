@@ -54,4 +54,5 @@
         <item name="colorSecondary">@color/dark_blue</item>   <!-- checked -->
         <item name="colorOnSurface">@color/light_blue</item>  <!-- unchecked -->
     </style>
+
 </resources>

@@ -8,5 +8,8 @@
     <color name="dark_blue">#0a213d</color>
     <color name="light_blue">#85ABC8</color>
     <color name="splash_color">#162753</color>
+    <color name="selected_day_background">#3B82F6</color>
+    <color name="pressed_day_background">#93C5FD</color>
+    <color name="day_text_color">#1F2937</color>
 
 </resources>

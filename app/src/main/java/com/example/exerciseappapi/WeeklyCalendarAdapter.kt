@@ -1,0 +1,50 @@
+package com.example.exerciseappapi
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.exerciseappapi.databinding.ItemDayBinding
+import java.text.SimpleDateFormat
+import java.util.*
+
+class WeeklyCalendarAdapter(
+    private var days: List<Date>,
+    private val onDayClick: (Date) -> Unit
+) : RecyclerView.Adapter<WeeklyCalendarAdapter.DayViewHolder>() {
+
+    private var selectedPosition = -1
+
+    class DayViewHolder(private val binding: ItemDayBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(day: Date, isSelected: Boolean, onDayClick: (Date) -> Unit) {
+            val dayFormat = SimpleDateFormat("d", Locale.getDefault())
+            val dayOfWeekFormat = SimpleDateFormat("E", Locale.getDefault())
+
+            binding.textViewDay.text = dayFormat.format(day)
+            binding.textViewDayOfWeek.text = dayOfWeekFormat.format(day).first().toString()
+            binding.root.isSelected = isSelected
+            binding.root.setOnClickListener { onDayClick(day) }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
+        val binding = ItemDayBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return DayViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
+        holder.bind(days[position], position == selectedPosition) { date ->
+            val oldPosition = selectedPosition
+            selectedPosition = position
+            notifyItemChanged(oldPosition)
+            notifyItemChanged(selectedPosition)
+            onDayClick(date)
+        }
+    }
+
+    override fun getItemCount() = days.size
+
+    fun updateDays(newDays: List<Date>) {
+        days = newDays
+        notifyDataSetChanged()
+    }
+}
