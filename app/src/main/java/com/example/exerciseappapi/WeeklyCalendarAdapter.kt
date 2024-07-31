@@ -34,7 +34,7 @@ class WeeklyCalendarAdapter(
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind(days[position], position == selectedPosition) { date ->
             val oldPosition = selectedPosition
-            selectedPosition = position
+            selectedPosition = holder.adapterPosition
             notifyItemChanged(oldPosition)
             notifyItemChanged(selectedPosition)
             onDayClick(date)
@@ -46,5 +46,18 @@ class WeeklyCalendarAdapter(
     fun updateDays(newDays: List<Date>) {
         days = newDays
         notifyDataSetChanged()
+    }
+
+    fun setSelectedDate(date: Date) {
+        val newPosition = days.indexOfFirst {
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) ==
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+        }
+        if (newPosition != -1 && newPosition != selectedPosition) {
+            val oldPosition = selectedPosition
+            selectedPosition = newPosition
+            notifyItemChanged(oldPosition)
+            notifyItemChanged(selectedPosition)
+        }
     }
 }

@@ -69,7 +69,9 @@ class WorkoutsFragment : Fragment() {
             },
             onDeleteClick = { workoutEntity, position ->
                 showDeleteConfirmationDialog(workoutEntity, position)
-            }
+            },
+            showEditButton = true,
+            showDeleteButton = true
         )
         binding.workoutsRecyclerView.adapter = adapter
     }

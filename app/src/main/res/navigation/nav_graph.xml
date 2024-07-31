@@ -134,6 +134,15 @@
         <action
             android:id="@+id/action_homeFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_workoutDetailFragment"
+            app:destination="@id/workoutDetailFragment">
+            <argument
+                android:name="workout"
+                app:argType="com.example.exerciseappapi.Workout"
+                app:nullable="false" />
+        </action>
     </fragment>
+
 
 </navigation>

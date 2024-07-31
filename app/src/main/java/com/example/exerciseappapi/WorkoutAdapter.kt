@@ -11,7 +11,8 @@ class WorkoutAdapter(
     private val onItemClick: (WorkoutEntity) -> Unit,
     private val onEditClick: (WorkoutEntity) -> Unit,
     private val onDeleteClick: (WorkoutEntity, Int) -> Unit,
-    private val hideButtons: Boolean = false
+    private val showEditButton: Boolean,
+    private val showDeleteButton: Boolean
 ) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
@@ -20,12 +21,10 @@ class WorkoutAdapter(
     }
 
     override fun onBindViewHolder(holder: WorkoutViewHolder, position: Int) {
-        holder.bind(workouts[position], position)
+        holder.bind(workouts[position])
     }
 
-    override fun getItemCount() = workouts.size
-
-    fun getWorkoutAt(position: Int): WorkoutEntity = workouts[position]
+    override fun getItemCount(): Int = workouts.size
 
     fun setWorkouts(newWorkouts: List<WorkoutEntity>) {
         workouts.clear()
@@ -33,26 +32,26 @@ class WorkoutAdapter(
         notifyDataSetChanged()
     }
 
+    fun getWorkoutAt(position: Int): WorkoutEntity = workouts[position]
+
     inner class WorkoutViewHolder(private val binding: ItemWorkoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(workout: WorkoutEntity, position: Int) {
+        fun bind(workout: WorkoutEntity) {
             binding.workout = workout.toWorkout()
             binding.executePendingBindings()
-
-            if (hideButtons) {
-                binding.editButton.visibility = View.GONE
-                binding.deleteButton.visibility = View.GONE
-            }
 
             binding.root.setOnClickListener {
                 onItemClick(workout)
             }
 
-            binding.editButton.setOnClickListener {
-                onEditClick(workout)
-            }
+            binding.editButton.visibility = if (showEditButton) View.VISIBLE else View.GONE
+            binding.deleteButton.visibility = if (showDeleteButton) View.VISIBLE else View.GONE
 
             binding.deleteButton.setOnClickListener {
-                onDeleteClick(workout, position)
+                onDeleteClick(workout, adapterPosition)
+            }
+
+            binding.editButton.setOnClickListener {
+                onEditClick(workout)
             }
         }
     }
