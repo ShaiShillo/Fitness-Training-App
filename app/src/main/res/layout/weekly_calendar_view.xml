@@ -31,6 +31,7 @@
             android:insetTop="0dp"
             android:insetRight="0dp"
             android:insetBottom="0dp"
+            android:layoutDirection="ltr"
             app:backgroundTint="@color/light_blue"
             app:cornerRadius="24dp"
             app:icon="@drawable/ic_chevron_left"
@@ -41,7 +42,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewYearMonth"
-            tools:ignore="TouchTargetSizeCheck" />
+            app:layout_constraintHorizontal_bias="0"
+        tools:ignore="TouchTargetSizeCheck" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewWeek"
@@ -63,6 +65,7 @@
             android:insetTop="0dp"
             android:insetRight="0dp"
             android:insetBottom="0dp"
+            android:layoutDirection="ltr"
             app:backgroundTint="@color/light_blue"
             app:cornerRadius="24dp"
             app:icon="@drawable/ic_chevron_right"
@@ -73,6 +76,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewYearMonth"
-            tools:ignore="TouchTargetSizeCheck" />
+            app:layout_constraintHorizontal_bias="1"
+        tools:ignore="TouchTargetSizeCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
