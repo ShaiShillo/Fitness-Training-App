@@ -1,9 +1,24 @@
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+}
+
+val secretsPropsFile = rootProject.file("secrets.properties")
+val secretsProps = Properties()
+
+if (secretsPropsFile.exists()) {
+    println("Loading secrets.properties")
+    secretsProps.load(FileInputStream(secretsPropsFile))
+} else {
+    println("secrets.properties file not found.")
+    throw FileNotFoundException("secrets.properties file not found. Create it in the root directory and add your API key.")
 }
 
 android {
