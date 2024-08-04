@@ -23,6 +23,7 @@ For more detailed information, please refer to the [project poster PDF](./docs/F
   - Retrofit
   - Room
   - LiveData
+  - Flow
   - ViewModel
 
 ## Installation
