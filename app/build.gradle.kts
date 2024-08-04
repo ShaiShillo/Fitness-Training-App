@@ -22,6 +22,8 @@ if (secretsPropsFile.exists()) {
 }
 
 android {
+
+
     namespace = "com.example.exerciseappapi"
     compileSdk = 34
 
@@ -33,6 +35,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_KEY", "\"${secretsProps["API_KEY"]}\"")
     }
 
     buildTypes {
@@ -54,6 +57,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true  // Enable buildConfig feature
     }
 }
 
